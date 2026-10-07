@@ -48,6 +48,9 @@ body.light-ui{--text:#10243a;--muted:#45657e;--glass:rgba(225,241,252,.7);--glas
 button,input,.app,.cat,.dock,.dock button,.desktop-icon,.window,.panel,.island,.context,.calendar{pointer-events:auto}
 .calc-display{width:100%;font-size:30px;text-align:right;background:#03101dcc;border:1px solid #ffffff18;border-radius:12px;color:#fff;padding:15px;outline:0}
 .calc-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:12px}.calc-grid button{height:46px;border:1px solid #ffffff12;border-radius:10px;background:#ffffff08;color:#e9f6ff;font-size:15px;cursor:pointer}.calc-grid button:hover{background:#159aff28}.calc-grid .op{color:#5cbaff;background:#0d91ff12}.calc-grid .eq{background:#0d91ff;color:white}.calc-result{text-align:right;font-size:13px;color:#8fb3ce;min-height:22px;margin-top:7px}
+
+.notes-layout{height:100%;display:grid;grid-template-columns:210px 1fr;gap:0;margin:-18px}.notes-side{border-right:1px solid #ffffff12;padding:14px;background:#03101f66;overflow:auto}.notes-side h3{font-size:11px;color:#62b9ff;letter-spacing:.08em;margin:4px 8px 10px}.note-project{width:100%;border:0;border-radius:9px;background:transparent;color:#bcd1e2;text-align:left;padding:9px 10px;cursor:pointer;margin-bottom:3px}.note-project:hover,.note-project.active{background:#0d91ff20;color:#fff}.notes-main{padding:20px;overflow:auto}.notes-head{display:flex;align-items:center;gap:10px;border-bottom:1px solid #ffffff12;padding-bottom:12px;margin-bottom:18px}.notes-head div{flex:1}.notes-head h2{margin:0;font-size:18px}.notes-head small{color:#7f9db5}.notes-head button{border:1px solid #159aff55;background:#159aff14;color:#cceaff;border-radius:8px;padding:7px 10px;cursor:pointer}.markdown{font-size:13px;line-height:1.65;color:#d7e7f4}.markdown h1,.markdown h2,.markdown h3{color:#f1f8ff;border-bottom:1px solid #ffffff0e;padding-bottom:5px}.markdown h1{font-size:25px}.markdown h2{font-size:19px}.markdown h3{font-size:15px}.markdown code{background:#071b2b;padding:2px 5px;border-radius:5px;color:#75c5ff}.markdown pre{background:#020b14;border:1px solid #ffffff12;border-radius:9px;padding:12px;overflow:auto;white-space:pre-wrap}.markdown a{color:#55b8ff}.markdown img{max-width:100%;border-radius:8px}.markdown blockquote{border-left:3px solid #159aff;padding-left:12px;color:#9eb7ca}.notes-status{color:#7897af;font-size:12px}.local-note{width:100%;height:calc(100% - 70px);resize:none;background:#03101faa;border:1px solid #ffffff12;border-radius:10px;color:#dcecff;padding:14px;outline:0;font:13px/1.6 "JetBrains Mono","Consolas",monospace}
+@media(max-width:650px){.notes-layout{grid-template-columns:130px 1fr}.notes-side{padding:8px}.note-project{font-size:11px;padding:8px 6px}.notes-main{padding:13px}}
 </style>
 </head><body><div class="wallpaper" id="wallpaper"></div><div class="desktop-hint">Clique com o botão direito para ações rápidas · tecla Meta abre o LS Launcher</div>
 <header class="top">
@@ -76,7 +79,7 @@ button,input,.app,.cat,.dock,.dock button,.desktop-icon,.window,.panel,.island,.
    <button class="app" data-name="configurações settings" onclick="openQuick('settingsWin')"><span class="ico">⚙</span><span>Configurações</span></button>
    <button class="app" data-name="monitor sistema" onclick="openQuick('monitorWin')"><span class="ico">⌁</span><span>Monitor</span></button>
    <button class="app" data-name="captura screenshot" onclick="fakeScreenshot()"><span class="ico">▣</span><span>Captura de Tela</span></button>
-   <button class="app" data-name="editor texto" onclick="openQuick('editorWin')"><span class="ico">▤</span><span>Editor de Texto</span></button>
+   <button class="app" data-name="editor texto" onclick="openQuick('editorWin')"><span class="ico">▤</span><span>Notas</span></button>
    <button class="app" data-name="música audio"><span class="ico">♫</span><span>Música</span></button>
    <button class="app" data-name="calculadora" onclick="openQuick('calcWin')"><span class="ico">▦</span><span>Calculadora</span></button>
   </div>
@@ -114,7 +117,15 @@ button,input,.app,.cat,.dock,.dock button,.desktop-icon,.window,.panel,.island,.
 <div class="window quickwin hidden" id="browserWin"><div class="titlebar">◉ &nbsp; Navegador<div class="controls"><button onclick="minWin('browserWin')">—</button><button onclick="maxWin('browserWin')">□</button><button onclick="closeWin('browserWin')">×</button></div></div><div class="quickbody"><div class="browserbar"><input id="urlbox" value="https://www.google.com" aria-label="Endereço"><button onclick="goWeb()">Ir</button></div><div class="cards"><div class="card"><h3>LS Start</h3><p>Uma página inicial limpa para o LS-OS. Digite um endereço e abra no navegador real.</p></div><div class="card"><h3>GitHub</h3><p>Atalho para desenvolvimento e projetos.</p><button class="primary" onclick="window.open('https://github.com','_blank')">Abrir GitHub</button></div></div></div></div>
 <div class="window quickwin hidden" id="settingsWin"><div class="titlebar">⚙ &nbsp; Configurações<div class="controls"><button onclick="minWin('settingsWin')">—</button><button onclick="maxWin('settingsWin')">□</button><button onclick="closeWin('settingsWin')">×</button></div></div><div class="quickbody"><h2 style="margin-top:0">Configurações</h2><div class="cards"><div class="card"><h3>Aparência</h3><div class="toggle"><span>Efeito de vidro</span><span class="switch" onclick="toggleGlass(this)"></span></div><div class="toggle"><span>Tema escuro</span><span class="switch" onclick="toggleTheme(this)"></span></div></div><div class="card"><h3>Sistema</h3><p>LS-OS · Arch Linux · Hyprland</p><p style="margin-top:8px">Interface experimental do ambiente LS.</p></div><div class="card"><h3>Rede</h3><p><span class="green">● Online</span><br>Ethernet / Wi-Fi disponíveis</p></div><div class="card"><h3>Bluetooth</h3><p>JBL 510BT conectado</p></div></div></div></div>
 <div class="window quickwin hidden" id="monitorWin"><div class="titlebar">⌁ &nbsp; Monitor do Sistema<div class="controls"><button onclick="minWin('monitorWin')">—</button><button onclick="maxWin('monitorWin')">□</button><button onclick="closeWin('monitorWin')">×</button></div></div><div class="quickbody"><h2 style="margin-top:0">Desempenho</h2><div class="cards"><div class="card"><h3>CPU</h3><p id="monCpu" style="font-size:28px;color:#4ab1ff">12%</p></div><div class="card"><h3>Memória</h3><p style="font-size:28px;color:#4ab1ff">3.1 / 8 GB</p></div><div class="card"><h3>GPU</h3><p style="font-size:28px;color:#4ab1ff">18%</p></div><div class="card"><h3>Temperatura</h3><p style="font-size:28px;color:#4ab1ff">47 °C</p></div></div></div></div>
-<div class="window quickwin hidden" id="editorWin"><div class="titlebar">▤ &nbsp; Editor de Texto<div class="controls"><button onclick="minWin('editorWin')">—</button><button onclick="maxWin('editorWin')">□</button><button onclick="closeWin('editorWin')">×</button></div></div><div class="quickbody"><textarea style="width:100%;height:100%;resize:none;background:#04111f;border:1px solid #ffffff15;border-radius:10px;color:#dcecff;padding:14px;outline:0" placeholder="Comece a escrever..."></textarea></div></div>
+<div class="window quickwin hidden" id="editorWin"><div class="titlebar">▤ &nbsp; Notas · Projetos<div class="controls"><button onclick="minWin('editorWin')">—</button><button onclick="maxWin('editorWin')">□</button><button onclick="closeWin('editorWin')">×</button></div></div><div class="quickbody">
+<div class="notes-layout"><aside class="notes-side"><h3>PROJETOS</h3>
+<button class="note-project active" onclick="loadProjectNote('LS-OS',this)">LS-OS</button>
+<button class="note-project" onclick="loadProjectNote('EarthLive',this)">Earth Live</button>
+<button class="note-project" onclick="loadProjectNote('moni-weather',this)">MONI Weather</button>
+<button class="note-project" onclick="loadProjectNote('FastFox_App',this)">FastFox App</button>
+<h3 style="margin-top:18px">PESSOAL</h3><button class="note-project" onclick="openLocalNote(this)">＋ Nota local</button>
+</aside><main class="notes-main"><div class="notes-head"><div><h2 id="noteTitle">LS-OS</h2><small id="noteSource">README.md · GitHub</small></div><button id="noteGitBtn" onclick="openNoteGit()">↗ GitHub</button></div><div id="noteContent" class="markdown"><span class="notes-status">Abra um projeto para carregar seu README.</span></div></main></div>
+</div></div>
 <div class="window quickwin hidden" id="calcWin"><div class="titlebar">▦ &nbsp; Calculadora<div class="controls"><button onclick="minWin('calcWin')">—</button><button onclick="maxWin('calcWin')">□</button><button onclick="closeWin('calcWin')">×</button></div></div><div class="quickbody">
 <input id="calcInput" class="calc-display" placeholder="0" autocomplete="off"><div id="calcOut" class="calc-result">Pronta</div>
 <div class="calc-grid">
@@ -197,6 +208,38 @@ function runTerm(raw){let input=raw.trim(),parts=input.split(/\\s+/),cmd=parts[0
 $('termInput').addEventListener('keydown',e=>{if(e.key==='Enter'){runTerm(e.target.value);e.target.value=''}});
 
 $('calcInput').addEventListener('keydown',e=>{if(e.key==='Enter')calc()});
+
+const noteRepos={
+ 'LS-OS':'LS-OS',
+ 'EarthLive':'EarthLive',
+ 'moni-weather':'moni-weather',
+ 'FastFox_App':'FastFox_App'
+};
+let activeNoteRepo='LS-OS';
+function mdEscape(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function renderMarkdown(md){
+ let x=mdEscape(md);
+ x=x.replace(/\`\`\`([\\s\\S]*?)\`\`\`/g,(m,p)=>'<pre><code>'+p.trim()+'</code></pre>');
+ x=x.replace(/^### (.+)$/gm,'<h3>$1</h3>').replace(/^## (.+)$/gm,'<h2>$1</h2>').replace(/^# (.+)$/gm,'<h1>$1</h1>');
+ x=x.replace(/^> (.+)$/gm,'<blockquote>$1</blockquote>').replace(/^[-*] (.+)$/gm,'<div>• $1</div>');
+ x=x.replace(/!\\[([^\\]]*)\\]\\(([^)]+)\\)/g,'<img alt="$1" src="$2">');
+ x=x.replace(/\\[([^\\]]+)\\]\\((https?:\\/\\/[^)]+)\\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>');
+ x=x.replace(/\`([^\`]+)\`/g,'<code>$1</code>').replace(/\\*\\*([^*]+)\\*\\*/g,'<strong>$1</strong>');
+ return x.replace(/\\n\\n/g,'<br><br>').replace(/\\n/g,'<br>');
+}
+async function loadProjectNote(key,btn){
+ activeNoteRepo=noteRepos[key]||key;
+ document.querySelectorAll('.note-project').forEach(x=>x.classList.remove('active'));if(btn)btn.classList.add('active');
+ $('noteTitle').textContent=key;$('noteSource').textContent='README.md · GitHub';$('noteGitBtn').style.display='';
+ $('noteContent').innerHTML='<span class="notes-status">Carregando README...</span>';
+ const urls=['https://raw.githubusercontent.com/LucasSudati/'+activeNoteRepo+'/main/README.md','https://raw.githubusercontent.com/LucasSudati/'+activeNoteRepo+'/master/README.md'];
+ for(const u of urls){try{let r=await fetch(u,{cache:'no-store'});if(r.ok){let md=await r.text();$('noteContent').innerHTML=renderMarkdown(md);return}}catch(e){}}
+ $('noteContent').innerHTML='<span class="notes-status">README não encontrado ou indisponível. O projeto continua acessível pelo botão GitHub.</span>';
+}
+function openNoteGit(){window.open('https://github.com/LucasSudati/'+activeNoteRepo,'_blank')}
+function openLocalNote(btn){document.querySelectorAll('.note-project').forEach(x=>x.classList.remove('active'));btn.classList.add('active');$('noteTitle').textContent='Nota local';$('noteSource').textContent='Salva neste navegador';$('noteGitBtn').style.display='none';$('noteContent').innerHTML='<textarea id="localNote" class="local-note" placeholder="Escreva aqui..."></textarea>';let t=$('localNote');t.value=localStorage.getItem('lsos-note')||'';t.addEventListener('input',()=>localStorage.setItem('lsos-note',t.value))}
+const originalOpenQuick=openQuick;
+openQuick=function(id){originalOpenQuick(id);if(id==='editorWin'&&!$('editorWin').dataset.loaded){$('editorWin').dataset.loaded='1';loadProjectNote('LS-OS',document.querySelector('#editorWin .note-project'))}}
 const wsState={current:1};
 document.querySelectorAll('.ws').forEach((b,i)=>b.onclick=()=>{document.querySelectorAll('.ws').forEach(x=>x.classList.remove('active'));b.classList.add('active');wsState.current=i+1;$('wsScreen').textContent='WORKSPACE '+(i+1);setTimeout(()=>$('wsScreen').textContent='',500);document.querySelectorAll('.window').forEach(w=>{if(w.dataset.workspace&&+w.dataset.workspace!==i+1)w.classList.add('hidden')});notify('Workspace','Área '+(i+1)+' ativa.','▦')});
 document.addEventListener('keydown',e=>{if(e.altKey&&e.key>='1'&&e.key<='4')document.querySelectorAll('.ws')[+e.key-1].click();if(document.body.dataset.locked==='1'){delete document.body.dataset.locked;notify('Sessão','Bem-vindo de volta, lucas.','●')}});
