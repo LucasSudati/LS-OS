@@ -1,78 +1,96 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>LS-OS Interface Concept</title>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LS-OS · Interface Concept</title>
 <style>
-:root{--bg:#050a10;--panel:rgba(5,14,24,.78);--panel2:rgba(8,20,34,.88);--line:rgba(50,151,255,.32);--blue:#168cff;--blue2:#6ab7ff;--text:#e8f3ff;--muted:#7890a7;--good:#45dc87;--danger:#ff5d68;--r:16px}
-*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;font-family:"JetBrains Mono","Segoe UI",sans-serif;color:var(--text);background:#06101b}
-body{background:radial-gradient(circle at 75% 28%,rgba(27,105,177,.18),transparent 26%),linear-gradient(rgba(1,8,15,.38),rgba(1,8,15,.78)),url("https://images.unsplash.com/photo-1464278533981-50106e6176b1?auto=format&fit=crop&w=2400&q=90") center/cover no-repeat}
-body:after{content:"";position:fixed;inset:0;pointer-events:none;background-image:linear-gradient(rgba(38,139,230,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(38,139,230,.025) 1px,transparent 1px);background-size:40px 40px}
-button{font:inherit;color:inherit}.top{position:fixed;top:16px;left:18px;right:18px;height:48px;display:flex;align-items:center;justify-content:space-between;z-index:20}.island{height:44px;display:flex;align-items:center;gap:12px;padding:0 14px;border:1px solid var(--line);border-radius:14px;background:rgba(3,11,20,.8);backdrop-filter:blur(18px);box-shadow:0 10px 30px #0005}.brand{font-weight:900;font-size:20px;letter-spacing:-2px;color:var(--blue2)}.ws{width:34px;height:28px;border:0;border-radius:8px;background:transparent}.ws.active{background:var(--blue)}.status{font-size:14px;color:#a9c1d7}.status b{color:var(--text);font-weight:500}.desktop-logo{position:absolute;left:50%;top:39%;transform:translate(-50%,-50%);text-align:center;text-shadow:0 10px 40px #000}.desktop-logo .ls{font-size:74px;font-weight:900;letter-spacing:-10px;color:#9fc7ed;opacity:.72}.desktop-logo .os{letter-spacing:11px;color:#8eb9e4;margin-left:11px}.dock{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);display:flex;gap:7px;padding:8px;border:1px solid var(--line);border-radius:18px;background:rgba(3,11,20,.72);backdrop-filter:blur(20px);z-index:20}.dock button{width:48px;height:48px;border:0;border-radius:12px;background:transparent;font-size:22px;cursor:pointer}.dock button:hover{background:#168cff22}.launcher,.deck{position:fixed;top:78px;bottom:82px;border:1px solid var(--line);border-radius:var(--r);background:var(--panel);backdrop-filter:blur(26px);box-shadow:0 24px 80px #0009;z-index:10;transition:.22s ease}.launcher{left:18px;width:min(650px,calc(100vw - 36px));padding:18px}.launcher.hidden{transform:translateX(-110%);opacity:0}.deck{right:18px;width:330px;padding:18px}.deck.hidden{transform:translateX(110%);opacity:0}.search{display:flex;align-items:center;gap:10px;height:48px;padding:0 16px;border:1px solid var(--line);border-radius:13px;background:#071522}.search input{width:100%;border:0;outline:0;background:none;color:var(--text);font:inherit}.launcher-main{display:grid;grid-template-columns:180px 1fr;gap:18px;margin-top:16px;height:calc(100% - 64px)}.categories{border-right:1px solid #ffffff12;padding-right:14px}.cat{display:block;width:100%;border:0;text-align:left;padding:11px;border-radius:9px;background:transparent;color:#9bb0c4;cursor:pointer}.cat.active,.cat:hover{background:#168cff1e;color:#dceeff}.apps{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;align-content:start}.app{height:105px;border:1px solid transparent;border-radius:13px;background:#ffffff04;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;cursor:pointer}.app:hover{border-color:var(--line);background:#168cff12}.app .icon{font-size:30px}.app span:last-child{font-size:12px}.deck h2{font-size:15px;letter-spacing:1px;color:var(--blue2);margin:2px 0 20px}.metric{margin:15px 0}.metric-head{display:flex;justify-content:space-between;font-size:12px;margin-bottom:7px}.bar{height:6px;border-radius:8px;background:#10263a;overflow:hidden}.bar i{display:block;height:100%;background:linear-gradient(90deg,#0d74e8,#48a7ff);border-radius:8px}.section{border-top:1px solid #ffffff12;margin-top:20px;padding-top:17px}.section-title{font-size:11px;color:var(--blue2);letter-spacing:1px;margin-bottom:11px}.online{color:var(--good)}.quick{display:grid;grid-template-columns:1fr 1fr;gap:8px}.quick button{border:1px solid #ffffff10;background:#ffffff06;border-radius:10px;padding:11px;cursor:pointer}.quick button:hover{background:#168cff18}.window{position:absolute;left:23%;top:25%;width:560px;height:360px;background:var(--panel2);border:1px solid var(--line);border-radius:14px;box-shadow:0 30px 80px #000a;backdrop-filter:blur(20px);display:none;z-index:8}.window.show{display:block}.titlebar{height:42px;border-bottom:1px solid #ffffff10;display:flex;align-items:center;justify-content:space-between;padding:0 13px;font-size:12px}.dots{color:#ff6370}.terminal{padding:20px;color:#b9d8f4;font-size:13px;line-height:1.6}.terminal b{color:#43a6ff}.hint{position:fixed;bottom:87px;left:50%;transform:translateX(-50%);font-size:11px;color:#7d94a9;background:#030b13aa;padding:7px 12px;border-radius:8px}.power{color:var(--danger)}@media(max-width:900px){.deck{display:none}.launcher{right:18px;width:auto}.launcher-main{grid-template-columns:130px 1fr}.apps{grid-template-columns:repeat(2,1fr)}.top .center{display:none}}
+:root{--blue:#0d91ff;--blue2:#5bb7ff;--bg:#020914;--glass:rgba(3,13,25,.82);--glass2:rgba(4,17,31,.91);--line:rgba(36,153,255,.48);--text:#e8f4ff;--muted:#8aa3ba;--green:#40db7a;--red:#ff5c65}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;font-family:"Segoe UI","Noto Sans",sans-serif;color:var(--text);background:#020914}
+body{background:linear-gradient(#00102025,#00102045),url("assets/wallpaper.webp") center/cover no-repeat}
+button,input{font:inherit}.glass{background:var(--glass);border:1px solid var(--line);box-shadow:0 20px 55px #0008;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+.top{position:fixed;z-index:50;top:8px;left:20px;right:20px;display:flex;justify-content:space-between;pointer-events:none}.island{pointer-events:auto;height:40px;border:1px solid var(--line);border-radius:13px;background:#020b16dd;display:flex;align-items:center;gap:11px;padding:0 13px;box-shadow:0 8px 25px #0007}.brand{font-size:22px;font-weight:900;letter-spacing:-2px;color:#35a6ff}.ws{width:35px;height:27px;border:0;border-radius:8px;color:#a6bad0;background:transparent;cursor:pointer}.ws.active{background:var(--blue);color:white}.center{position:absolute;left:50%;transform:translateX(-50%);font-size:13px}.status button{border:0;background:none;color:#b8d1e7;cursor:pointer;font-size:16px}.status .power{color:#2aa7ff}
+.panel{position:fixed;border-radius:15px;transition:.2s ease;z-index:20}.launcher{left:20px;top:67px;width:570px;height:474px;padding:13px}.launcher.closed{transform:translateX(-110%);opacity:0}.search{height:42px;border:1px solid #1f75b566;border-radius:11px;background:#061728;display:flex;align-items:center;gap:9px;padding:0 13px}.search input{width:100%;background:none;border:0;outline:0;color:white}.launcher-body{height:344px;margin-top:11px;display:grid;grid-template-columns:185px 1fr}.cats{padding-right:12px;border-right:1px solid #ffffff10}.cat{width:100%;height:36px;border:0;border-radius:8px;background:transparent;color:#a9bfd2;text-align:left;padding:0 12px;cursor:pointer}.cat.active,.cat:hover{background:#0c77cc38;color:#fff}.cat.danger{color:#ff7078}.apps{padding-left:15px;display:grid;grid-template-columns:repeat(3,1fr);gap:7px;align-content:start}.app{height:94px;border:1px solid transparent;border-radius:10px;background:transparent;color:#dcecff;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px}.app:hover{background:#0d91ff18;border-color:#0d91ff44}.ico{font-size:30px}.launcher-foot{position:absolute;bottom:0;left:0;right:0;height:62px;border-top:1px solid #ffffff10;display:flex;align-items:center;gap:25px;padding:0 16px;font-size:11px}.mini{min-width:90px}.mini div:first-child{display:flex;justify-content:space-between}.mini .bar{margin-top:6px}.user{margin-left:auto;display:flex;gap:9px;align-items:center}.avatar{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:#244867}
+.deck{right:20px;top:67px;width:300px;padding:14px;max-height:650px}.deck.closed{transform:translateX(115%);opacity:0}.deck-head{display:flex;align-items:center;justify-content:space-between;color:#9dccf3}.deck-head b{letter-spacing:1px}.x{border:0;background:none;color:#9bb1c5;cursor:pointer;font-size:18px}.section{border-top:1px solid #ffffff12;margin-top:14px;padding-top:13px}.section:first-of-type{border-top:0}.section-title{font-size:11px;color:#52aff9;font-weight:700;margin-bottom:9px}.metric{display:grid;grid-template-columns:52px 1fr 58px;align-items:center;gap:8px;margin:10px 0;font-size:12px}.metric span:last-child{text-align:right}.bar{height:6px;border-radius:9px;background:#10273a;overflow:hidden}.bar i{display:block;height:100%;background:linear-gradient(90deg,#0b7fea,#28a8ff);border-radius:9px}.network{font-size:12px;line-height:1.7}.green{color:var(--green)}.muted{color:var(--muted)}.volume{width:100%;accent-color:var(--blue)}.bt{display:flex;align-items:center;gap:10px;font-size:12px}.bt strong{color:#50e27f}.actions{display:grid;gap:6px}.actions button{height:38px;border:1px solid #ffffff0c;border-radius:9px;background:#ffffff05;color:#c9d9e7;text-align:left;padding:0 11px;cursor:pointer}.actions button:hover{background:#0d91ff18}.actions .danger{color:#ff6a72}
+.window{position:fixed;border-radius:14px;overflow:hidden;background:var(--glass2);border:1px solid var(--line);box-shadow:0 25px 60px #000a;backdrop-filter:blur(18px);z-index:10}.window.hidden{display:none}.titlebar{height:38px;border-bottom:1px solid #ffffff10;display:flex;align-items:center;padding:0 12px;font-size:11px;cursor:move}.controls{margin-left:auto;display:flex;gap:12px}.controls button{border:0;background:none;color:#82a1ba;cursor:pointer}.terminal-win{left:20px;bottom:62px;width:575px;height:315px}.terminal{padding:18px;font:12px/1.48 "JetBrains Mono","Consolas",monospace;color:#c2def4;display:grid;grid-template-columns:240px 1fr}.ascii{white-space:pre;color:#159eff;font-weight:bold;font-size:10px;line-height:1.05}.term-info b{color:#17a1ff}.prompt{grid-column:1/-1;margin-top:6px;color:#3eafff}
+.files-win{left:38%;bottom:94px;width:620px;height:300px}.filebody{height:262px;display:grid;grid-template-columns:160px 1fr}.sidebar{border-right:1px solid #ffffff10;padding:10px}.side{padding:7px 9px;border-radius:7px;font-size:11px;color:#a8bfd2}.side.active{background:#0c76c838;color:white}.folders{padding:18px;display:grid;grid-template-columns:repeat(4,1fr);gap:17px;align-content:start}.folder{text-align:center;font-size:11px;color:#bcd0e0}.folder .ficon{font-size:31px;color:#1a9dff;display:block;margin-bottom:6px}
+.dock{position:fixed;z-index:60;bottom:13px;left:50%;transform:translateX(-50%);height:53px;padding:5px 8px;display:flex;gap:4px;border-radius:15px}.dock button{width:43px;border:0;border-radius:10px;background:transparent;color:#d8e9f7;font-size:20px;cursor:pointer}.dock button:hover{background:#159aff25}.dock button.active{background:#159aff25}
+.toasts{position:fixed;z-index:30;right:20px;bottom:18px;width:300px}.toast{padding:10px 12px;border-bottom:1px solid #ffffff10;background:#03101fe8;display:flex;gap:10px;font-size:11px}.toast:first-child{border-radius:12px 12px 0 0}.toast:last-child{border-radius:0 0 12px 12px}.toast strong{display:block;margin-bottom:2px}.toast .ticon{font-size:20px;color:#2ba7ff}.toast button{margin-left:auto;border:0;background:none;color:#7895ac;cursor:pointer}
+.context{position:fixed;display:none;z-index:100;width:190px;padding:6px;border-radius:10px}.context.show{display:block}.context button{width:100%;height:32px;border:0;background:none;color:#c7d8e7;text-align:left;border-radius:6px}.context button:hover{background:#148efc22}
+@media(max-width:1050px){.deck{display:none}.files-win{display:none}.launcher{width:min(570px,calc(100vw - 40px))}.terminal-win{width:min(575px,calc(100vw - 40px))}.status span:nth-of-type(n+3){display:none}}
 </style>
-</head>
-<body>
+</head><body>
 <header class="top">
-  <div class="island"><span class="brand">LS</span><button class="ws active">1</button><button class="ws">2</button><button class="ws">3</button><button class="ws">4</button></div>
-  <div class="island center"><b id="clock">--:--</b><span>•</span><span id="date">--</span></div>
-  <div class="island status"><span>◉</span><b>NET</b><span>⌁</span><b>BT</b><span>♪ 78%</span><span>▣ 92%</span></div>
+ <div class="island"><span class="brand">LS</span><button class="ws active">1</button><button class="ws">2</button><button class="ws">3</button><button class="ws">4</button></div>
+ <div class="island center"><b id="clock">--:--</b><span>•</span><span id="date">--</span></div>
+ <div class="island status"><button title="Wi-Fi">◉</button><button title="Bluetooth">⌁</button><button title="Áudio" onclick="toggleDeck()">♪</button><span>▣ 78%</span><button class="power" onclick="toggleDeck()">⏻</button></div>
 </header>
 
-<div class="desktop-logo"><div class="ls">LS</div><div class="os">LS-OS</div></div>
-
-<section class="launcher" id="launcher">
-  <div class="search">⌕ <input id="search" placeholder="Buscar aplicativos, arquivos ou comandos..."></div>
-  <div class="launcher-main">
-    <nav class="categories">
-      <button class="cat active">▦ Aplicativos</button><button class="cat">□ Arquivos</button><button class="cat">⚙ Configurações</button><button class="cat">◉ Sistema</button><button class="cat">◎ Internet</button><button class="cat">⌘ Desenvolvimento</button><button class="cat">♫ Multimídia</button><button class="cat power">⏻ Energia</button>
-    </nav>
-    <div class="apps" id="apps">
-      <button class="app" data-name="terminal" onclick="openTerminal()"><span class="icon">›_</span><span>Terminal</span></button>
-      <button class="app" data-name="navegador"><span class="icon">◉</span><span>Navegador</span></button>
-      <button class="app" data-name="arquivos"><span class="icon">▰</span><span>Arquivos</span></button>
-      <button class="app" data-name="configurações"><span class="icon">⚙</span><span>Configurações</span></button>
-      <button class="app" data-name="monitor"><span class="icon">⌁</span><span>Monitor</span></button>
-      <button class="app" data-name="captura"><span class="icon">▣</span><span>Captura</span></button>
-      <button class="app" data-name="editor"><span class="icon">▤</span><span>Editor</span></button>
-      <button class="app" data-name="música"><span class="icon">♫</span><span>Música</span></button>
-      <button class="app" data-name="calculadora"><span class="icon">▦</span><span>Calculadora</span></button>
-    </div>
+<section class="panel glass launcher" id="launcher">
+ <div class="search">⌕<input id="search" placeholder="Buscar aplicativos, arquivos ou comandos..." autocomplete="off"></div>
+ <div class="launcher-body">
+  <nav class="cats"><button class="cat active">▦ &nbsp; Aplicativos</button><button class="cat">□ &nbsp; Arquivos</button><button class="cat">⚙ &nbsp; Configurações</button><button class="cat">▣ &nbsp; Sistema</button><button class="cat">◎ &nbsp; Internet</button><button class="cat">⌘ &nbsp; Desenvolvimento</button><button class="cat">♫ &nbsp; Multimídia</button><button class="cat">♧ &nbsp; Acessórios</button><button class="cat danger">⏻ &nbsp; Energia</button></nav>
+  <div class="apps">
+   <button class="app" data-name="terminal kitty" onclick="toggleWindow('terminalWin')"><span class="ico">›_</span><span>Terminal</span></button>
+   <button class="app" data-name="navegador firefox"><span class="ico">◉</span><span>Navegador</span></button>
+   <button class="app" data-name="arquivos thunar" onclick="toggleWindow('filesWin')"><span class="ico">▰</span><span>Arquivos</span></button>
+   <button class="app" data-name="configurações settings"><span class="ico">⚙</span><span>Configurações</span></button>
+   <button class="app" data-name="monitor sistema"><span class="ico">⌁</span><span>Monitor</span></button>
+   <button class="app" data-name="captura screenshot"><span class="ico">▣</span><span>Captura de Tela</span></button>
+   <button class="app" data-name="editor texto"><span class="ico">▤</span><span>Editor de Texto</span></button>
+   <button class="app" data-name="música audio"><span class="ico">♫</span><span>Música</span></button>
+   <button class="app" data-name="calculadora"><span class="ico">▦</span><span>Calculadora</span></button>
   </div>
+ </div>
+ <div class="launcher-foot"><div class="mini"><div><span>CPU</span><span id="cpuSmall">12%</span></div><div class="bar"><i id="cpuBarSmall" style="width:12%"></i></div></div><div class="mini"><div><span>RAM</span><span>3.1/8 GB</span></div><div class="bar"><i style="width:39%"></i></div></div><div class="mini"><div><span>SSD</span><span>28%</span></div><div class="bar"><i style="width:28%"></i></div></div><div class="user"><div class="avatar">●</div><div><b>lucas</b><br><span class="muted">LS-OS</span></div></div></div>
 </section>
 
-<aside class="deck" id="deck">
-  <h2>LS / SYSTEM DECK</h2>
-  <div class="metric"><div class="metric-head"><span>CPU</span><span>11%</span></div><div class="bar"><i style="width:11%"></i></div></div>
-  <div class="metric"><div class="metric-head"><span>RAM</span><span>3.2 / 8 GB</span></div><div class="bar"><i style="width:40%"></i></div></div>
-  <div class="metric"><div class="metric-head"><span>GPU</span><span>18%</span></div><div class="bar"><i style="width:18%"></i></div></div>
-  <div class="metric"><div class="metric-head"><span>TEMP</span><span>47 °C</span></div><div class="bar"><i style="width:47%"></i></div></div>
-  <div class="section"><div class="section-title">REDE</div><div><span class="online">●</span> Online</div><small style="color:var(--muted)">192.168.1.100 · ↓ 12.4 MB/s</small></div>
-  <div class="section"><div class="section-title">ÁUDIO</div><div class="metric"><div class="metric-head"><span>♪ Volume</span><span>78%</span></div><div class="bar"><i style="width:78%"></i></div></div></div>
-  <div class="section"><div class="section-title">BLUETOOTH</div><div>⌁ JBL 510BT</div></div>
-  <div class="section quick"><button>⚙ Settings</button><button>▣ Bloquear</button><button>☾ Suspender</button><button class="power">⏻ Energia</button></div>
+<aside class="panel glass deck" id="deck">
+ <div class="deck-head"><span class="brand">LS</span><b>SYSTEM DECK</b><button class="x" onclick="toggleDeck()">×</button></div>
+ <div class="section"><div class="section-title">SISTEMA</div>
+  <div class="metric"><span>▣ CPU</span><div class="bar"><i id="cpuBar" style="width:12%"></i></div><span id="cpuText">12%</span></div>
+  <div class="metric"><span>▤ RAM</span><div class="bar"><i style="width:39%"></i></div><span>3.1/8 GB</span></div>
+  <div class="metric"><span>▧ GPU</span><div class="bar"><i style="width:18%"></i></div><span>18%</span></div>
+  <div class="metric"><span>♨ TEMP</span><div class="bar"><i style="width:47%"></i></div><span>47 °C</span></div>
+ </div>
+ <div class="section network"><div class="section-title">REDE</div><div><span class="green">●</span> Online</div><div class="muted">192.168.1.100</div><div><span class="green">↑</span> 12.4 MB/s &nbsp; <span class="green">↓</span> 1.3 MB/s</div></div>
+ <div class="section"><div class="section-title">ÁUDIO</div><input class="volume" type="range" min="0" max="100" value="78" oninput="vol.textContent=this.value+'%'"><div style="text-align:right;font-size:11px" id="vol">78%</div></div>
+ <div class="section"><div class="section-title">BLUETOOTH</div><div class="bt"><strong>⌁</strong><span>JBL 510BT</span></div></div>
+ <div class="section actions"><button>⚙ &nbsp; Configurações</button><button>▣ &nbsp; Bloquear</button><button class="danger">⏻ &nbsp; Energia</button></div>
 </aside>
 
-<div class="window" id="terminal">
-  <div class="titlebar"><span><span class="dots">● ● ●</span> lucas@LS-OS: ~</span><button onclick="openTerminal()" style="border:0;background:none">×</button></div>
-  <div class="terminal"><b>lucas@LS-OS</b><br><br>OS: LS-OS (Arch Linux)<br>Kernel: 7.2.9-arch1-1<br>Desktop: Hyprland<br>Shell: zsh<br>Terminal: kitty<br>Session: Wayland<br><br><b>[lucas@LS-OS ~]$</b> <span id="cursor">█</span></div>
+<div class="window terminal-win" id="terminalWin">
+ <div class="titlebar">‹ &nbsp; lucas@LS-OS: ~ <div class="controls"><button>—</button><button>□</button><button onclick="toggleWindow('terminalWin')">×</button></div></div>
+ <div class="terminal"><div class="ascii">      ██      ███████
+      ██      ██
+      ██      ███████
+      ██           ██
+      ██████  ███████
+
+      L S - O S</div><div class="term-info"><b>lucas@LS-OS</b><br>────────────<br><b>OS:</b> LS-OS (Arch Linux)<br><b>Kernel:</b> 7.2.9-arch1-1<br><b>Uptime:</b> 2h 14m<br><b>Packages:</b> 782 (pacman)<br><b>DE:</b> Hyprland (Lua)<br><b>WM:</b> Hyprland<br><b>Terminal:</b> kitty<br><b>Memory:</b> 3.1 GiB / 8 GiB</div><div class="prompt">[lucas@LS-OS ~]$ <span id="cursor">█</span></div></div>
 </div>
 
-<div class="dock">
-  <button onclick="toggleLauncher()" title="LS Launcher">LS</button><button onclick="openTerminal()" title="Terminal">›_</button><button title="Arquivos">▰</button><button title="Navegador">◉</button><button title="Editor">▤</button><button onclick="toggleDeck()" title="System Deck">⌁</button>
+<div class="window files-win" id="filesWin">
+ <div class="titlebar">‹ &nbsp; › &nbsp; ⌂ &nbsp; <b>Início</b><div class="controls"><button>⌕</button><button>▦</button><button onclick="toggleWindow('filesWin')">×</button></div></div>
+ <div class="filebody"><div class="sidebar"><div class="side active">⌂ &nbsp; Início</div><div class="side">▣ &nbsp; Área de Trabalho</div><div class="side">▤ &nbsp; Documentos</div><div class="side">↓ &nbsp; Downloads</div><div class="side">▧ &nbsp; Imagens</div><div class="side">♫ &nbsp; Música</div><div class="side">▷ &nbsp; Vídeos</div><div class="side">▰ &nbsp; Projetos</div><div class="side">♲ &nbsp; Lixeira</div></div>
+ <div class="folders"><div class="folder"><span class="ficon">▰</span>Área de Trabalho</div><div class="folder"><span class="ficon">▰</span>Documentos</div><div class="folder"><span class="ficon">▰</span>Downloads</div><div class="folder"><span class="ficon">▰</span>Imagens</div><div class="folder"><span class="ficon">▰</span>Música</div><div class="folder"><span class="ficon">▰</span>Vídeos</div><div class="folder"><span class="ficon">▰</span>Projetos</div><div class="folder"><span class="ficon">▰</span>Público</div></div></div>
 </div>
-<div class="hint">Protótipo interativo · LS abre o launcher · ⌁ abre o System Deck</div>
 
+<div class="toasts glass" id="toasts"><div class="toast"><span class="ticon">▧</span><div><strong>Captura de tela</strong><span class="muted">Screenshot salvo em ~/Imagens</span></div><button onclick="this.parentElement.remove()">×</button></div><div class="toast"><span class="ticon">⌁</span><div><strong>Dispositivo conectado</strong><span class="muted">JBL 510BT</span></div><button onclick="this.parentElement.remove()">×</button></div><div class="toast"><span class="ticon">●</span><div><strong>Atualizações disponíveis</strong><span class="muted">5 pacotes podem ser atualizados</span></div><button onclick="this.parentElement.remove()">×</button></div></div>
+
+<nav class="dock glass"><button onclick="toggleLauncher()" title="LS Launcher">LS</button><button title="Arquivos" onclick="toggleWindow('filesWin')">▰</button><button title="Navegador">◉</button><button class="active" title="Terminal" onclick="toggleWindow('terminalWin')">›_</button><button title="Configurações">⚙</button><button title="Monitor">⌁</button><button title="Captura">▣</button><button title="Música">♫</button></nav>
+<div class="context glass" id="context"><button onclick="toggleLauncher()">▦ &nbsp; Abrir launcher</button><button onclick="toggleWindow('terminalWin')">›_ &nbsp; Abrir terminal</button><button onclick="toggleWindow('filesWin')">▰ &nbsp; Abrir arquivos</button><button onclick="toggleDeck()">⌁ &nbsp; System Deck</button></div>
 <script>
-const launcher=document.getElementById('launcher'),deck=document.getElementById('deck'),term=document.getElementById('terminal');
-function toggleLauncher(){launcher.classList.toggle('hidden')}
-function toggleDeck(){deck.classList.toggle('hidden')}
-function openTerminal(){term.classList.toggle('show');launcher.classList.add('hidden')}
-function tick(){const d=new Date();document.getElementById('clock').textContent=d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});document.getElementById('date').textContent=d.toLocaleDateString('pt-BR',{day:'2-digit',month:'short'}).toUpperCase()}
+const $=id=>document.getElementById(id),launcher=$('launcher'),deck=$('deck');
+function toggleLauncher(){launcher.classList.toggle('closed');if(!launcher.classList.contains('closed'))setTimeout(()=>$('search').focus(),150)}
+function toggleDeck(){deck.classList.toggle('closed')}
+function toggleWindow(id){$(id).classList.toggle('hidden');launcher.classList.add('closed')}
+function tick(){let d=new Date();$('clock').textContent=d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});$('date').textContent=d.toLocaleDateString('pt-BR',{day:'2-digit',month:'short',year:'numeric'}).toUpperCase()}
 tick();setInterval(tick,1000);
-document.getElementById('search').addEventListener('input',e=>{const q=e.target.value.toLowerCase();document.querySelectorAll('.app').forEach(a=>a.style.display=a.dataset.name.includes(q)?'flex':'none')});
+setInterval(()=>{let v=8+Math.floor(Math.random()*13);$('cpuText').textContent=v+'%';$('cpuBar').style.width=v+'%';$('cpuSmall').textContent=v+'%';$('cpuBarSmall').style.width=v+'%'},2200);
+$('search').addEventListener('input',e=>{let q=e.target.value.toLowerCase();document.querySelectorAll('.app').forEach(a=>a.style.display=a.dataset.name.includes(q)?'flex':'none')});
 document.querySelectorAll('.ws').forEach(b=>b.onclick=()=>{document.querySelectorAll('.ws').forEach(x=>x.classList.remove('active'));b.classList.add('active')});
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){launcher.classList.add('hidden');deck.classList.add('hidden');term.classList.remove('show')}});
-</script>
-</body>
-</html>
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){launcher.classList.add('closed');deck.classList.add('closed');$('context').classList.remove('show')}if(e.key==='Meta'){e.preventDefault();toggleLauncher()}});
+document.addEventListener('contextmenu',e=>{e.preventDefault();let c=$('context');c.style.left=Math.min(e.clientX,innerWidth-200)+'px';c.style.top=Math.min(e.clientY,innerHeight-150)+'px';c.classList.add('show')});
+document.addEventListener('click',e=>{if(!e.target.closest('#context'))$('context').classList.remove('show')});
+document.querySelectorAll('.titlebar').forEach(bar=>{let win=bar.parentElement,drag=false,ox=0,oy=0;bar.addEventListener('mousedown',e=>{if(e.target.tagName==='BUTTON')return;drag=true;ox=e.clientX-win.offsetLeft;oy=e.clientY-win.offsetTop;win.style.zIndex=40});document.addEventListener('mousemove',e=>{if(drag){win.style.left=Math.max(0,Math.min(innerWidth-win.offsetWidth,e.clientX-ox))+'px';win.style.top=Math.max(52,Math.min(innerHeight-win.offsetHeight,e.clientY-oy))+'px';win.style.bottom='auto'}});document.addEventListener('mouseup',()=>drag=false)});
+</script></body></html>
