@@ -53,6 +53,8 @@ button,input,.app,.cat,.dock,.dock button,.desktop-icon,.window,.panel,.island,.
 @media(max-width:650px){.notes-layout{grid-template-columns:130px 1fr}.notes-side{padding:8px}.note-project{font-size:11px;padding:8px 6px}.notes-main{padding:13px}}
 
 .filebody.list-mode .folders{display:block}.filebody.list-mode .folder{display:flex;align-items:center;gap:12px;margin:4px 0;padding:10px 12px}.filebody.list-mode .ficon{font-size:18px}.cat.active{background:#159aff22!important;color:#fff}.side{cursor:pointer}.side:hover{background:#ffffff0a}
+
+.fs-search-results{display:none;grid-column:1/-1;border-top:1px solid #ffffff12;margin-top:8px;padding-top:8px}.fs-search-results.show{display:block}.fs-hit{display:flex;width:100%;border:0;background:transparent;color:#cfe4f4;padding:8px 10px;border-radius:8px;text-align:left;cursor:pointer}.fs-hit:hover{background:#159aff18}.file-item{cursor:pointer}.file-item.file .ficon{opacity:.8}.termline b{white-space:nowrap}
 </style>
 </head><body><div class="wallpaper" id="wallpaper"></div><div class="desktop-hint">Clique com o botão direito para ações rápidas · tecla Meta abre o LS Launcher</div>
 <header class="top">
@@ -74,7 +76,7 @@ button,input,.app,.cat,.dock,.dock button,.desktop-icon,.window,.panel,.island,.
  <div class="search">⌕<input id="search" placeholder="Buscar aplicativos, arquivos ou comandos..." autocomplete="off"></div>
  <div class="launcher-body">
   <nav class="cats"><button class="cat active" onclick="launcherCategory(this,'all')">▦ &nbsp; Aplicativos</button><button class="cat" onclick="launcherAction(this,'filesWin')">□ &nbsp; Arquivos</button><button class="cat" onclick="launcherAction(this,'settingsWin')">⚙ &nbsp; Configurações</button><button class="cat" onclick="launcherAction(this,'monitorWin')">▣ &nbsp; Sistema</button><button class="cat" onclick="launcherAction(this,'browserWin')">◎ &nbsp; Internet</button><button class="cat" onclick="launcherCategory(this,'dev')">⌘ &nbsp; Desenvolvimento</button><button class="cat" onclick="launcherCategory(this,'media')">♫ &nbsp; Multimídia</button><button class="cat" onclick="launcherCategory(this,'tools')">♧ &nbsp; Acessórios</button><button class="cat danger" onclick="togglePower();toggleLauncher()">⏻ &nbsp; Energia</button></nav>
-  <div class="apps">
+  <div class="apps" id="launcherApps">
    <button class="app" data-name="terminal kitty desenvolvimento dev" onclick="toggleWindow('terminalWin')"><span class="ico">›_</span><span>Terminal</span></button>
    <button class="app" data-name="navegador firefox internet" onclick="openQuick('browserWin')"><span class="ico">◉</span><span>Navegador</span></button>
    <button class="app" data-name="arquivos thunar acessórios tools" onclick="toggleWindow('filesWin')"><span class="ico">▰</span><span>Arquivos</span></button>
@@ -151,7 +153,7 @@ function toggleWindow(id){let w=$(id);if(w.classList.contains('hidden')||w.class
 function tick(){let d=new Date();$('clock').textContent=d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});$('date').textContent=d.toLocaleDateString('pt-BR',{day:'2-digit',month:'short',year:'numeric'}).toUpperCase()}
 tick();setInterval(tick,1000);
 setInterval(()=>{let v=8+Math.floor(Math.random()*13);$('cpuText').textContent=v+'%';$('cpuBar').style.width=v+'%';$('cpuSmall').textContent=v+'%';$('cpuBarSmall').style.width=v+'%'},2200);
-$('search').addEventListener('input',e=>{let q=e.target.value.toLowerCase();document.querySelectorAll('.app').forEach(a=>a.style.display=a.dataset.name.includes(q)?'flex':'none')});
+$('search').addEventListener('input',e=>{let q=e.target.value.trim().toLowerCase();document.querySelectorAll('.app').forEach(a=>a.style.display=!q||a.dataset.name.includes(q)?'flex':'none');renderFsSearch(q)});
 document.querySelectorAll('.ws').forEach(b=>b.onclick=()=>{document.querySelectorAll('.ws').forEach(x=>x.classList.remove('active'));b.classList.add('active')});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){launcher.classList.add('closed');deck.classList.add('closed');$('context').classList.remove('show')}if(e.key==='Meta'){e.preventDefault();toggleLauncher()}});
 document.addEventListener('contextmenu',e=>{e.preventDefault();let c=$('context');c.style.left=Math.min(e.clientX,innerWidth-200)+'px';c.style.top=Math.min(e.clientY,innerHeight-150)+'px';c.classList.add('show')});
@@ -187,7 +189,7 @@ function launcherCategory(btn,kind){document.querySelectorAll('.cat').forEach(x=
 function launcherAction(btn,id){document.querySelectorAll('.cat').forEach(x=>x.classList.remove('active'));btn.classList.add('active');openQuick(id)}
 function musicDemo(){notify('Música','Player de música será conectado ao sistema real do LS-OS.')}
 function openPath(name){$('filePath').textContent='/home/lucas/'+name;document.querySelectorAll('.side').forEach(x=>x.classList.toggle('active',x.textContent.includes(name)));$('folders').innerHTML='<div class="folder" onclick="notify(\'Arquivos\',\'Item de demonstração aberto\')"><span class="ficon">▤</span>'+name+' · exemplo</div>'}
-function fileSearch(){const q=prompt('Buscar em /home/lucas:');if(q&&q.trim())notify('Busca de arquivos','Procurando por “'+q.trim()+'” no protótipo.')}
+function fileSearch(){const q=prompt('Buscar em '+displayPath()+':');if(q&&q.trim()){const hit=fsWalk(fsNode(cwd),displayPath(),[]).find(x=>x.name.toLowerCase().includes(q.trim().toLowerCase()));notify('Busca de arquivos',hit?hit.path:'Nenhum resultado.')}}
 function toggleFileView(){document.querySelector('#filesWin .filebody').classList.toggle('list-mode');notify('Arquivos','Visualização alternada.')}
 function calcAdd(v){$('calcInput').value+=v;$('calcInput').focus()}
 function calcClear(){$('calcInput').value='';$('calcOut').textContent='Pronta'}
@@ -205,17 +207,95 @@ function powerAction(a){togglePower();notify('Energia',a+' simulada na interface
 function lockScreen(){deck.classList.add('closed');notify('Sessão','Tela bloqueada simulada. Pressione qualquer tecla para continuar.','▣');document.body.dataset.locked='1'}
 function toggleGlass(el){el.classList.toggle('off');document.body.classList.toggle('no-glass')}
 function toggleTheme(el){el.classList.toggle('off');document.body.classList.toggle('light-ui')}
-function openFolder(el){let name=el.textContent.trim();$('filePath').textContent='/home/lucas/'+name;document.querySelectorAll('#folders .folder').forEach(x=>x.style.opacity=x===el?'1':'.45');notify('Arquivos',name+' aberto.','▰')}
-function fileHome(){$('filePath').textContent='/home/lucas';$('folders').innerHTML="<div class=\"folder\" onclick=\"openFolder(this)\"><span class=\"ficon\">▰</span>Área de Trabalho</div><div class=\"folder\" onclick=\"openFolder(this)\"><span class=\"ficon\">▰</span>Documentos</div><div class=\"folder\" onclick=\"openFolder(this)\"><span class=\"ficon\">▰</span>Downloads</div><div class=\"folder\" onclick=\"openFolder(this)\"><span class=\"ficon\">▰</span>Imagens</div><div class=\"folder\" onclick=\"openFolder(this)\"><span class=\"ficon\">▰</span>Música</div><div class=\"folder\" onclick=\"openFolder(this)\"><span class=\"ficon\">▰</span>Vídeos</div><div class=\"folder\" onclick=\"openFolder(this)\"><span class=\"ficon\">▰</span>Projetos</div><div class=\"folder\" onclick=\"openFolder(this)\"><span class=\"ficon\">▰</span>Público</div>";document.querySelectorAll('.side').forEach((x,i)=>x.classList.toggle('active',i===0))}
-function fileBack(){fileHome()}
+
+const FS_KEY='lsos-vfs-v1';
+const fsDefault={type:'dir',children:{
+ 'Área de Trabalho':{type:'dir',children:{}},
+ 'Documentos':{type:'dir',children:{'Bem-vindo.txt':{type:'file',content:'Bem-vindo ao LS-OS.'}}},
+ 'Downloads':{type:'dir',children:{}},'Imagens':{type:'dir',children:{}},'Música':{type:'dir',children:{}},
+ 'Vídeos':{type:'dir',children:{}},'Público':{type:'dir',children:{}},
+ 'Projetos':{type:'dir',children:{
+   'LS-OS':{type:'dir',children:{'README.md':{type:'file',content:'# LS-OS\nInterface e ambiente Linux pessoal.'}}},
+   'EarthLive':{type:'dir',children:{'README.md':{type:'file',content:'# Earth Live\nVisualização 3D de objetos no céu, mar e espaço.'}}},
+   'moni-weather':{type:'dir',children:{'README.md':{type:'file',content:'# MONI Weather\nMeteorologia e monitoramento em tempo real.'}}},
+   'FastFox_App':{type:'dir',children:{'README.md':{type:'file',content:'# FastFox App\nFerramentas para Assetto Corsa.'}}}
+ }}
+}};
+let vfs;try{vfs=JSON.parse(localStorage.getItem(FS_KEY))||fsDefault}catch(e){vfs=fsDefault}
+let cwd=['home','lucas'],fileHistory=[];
+function saveFS(){localStorage.setItem(FS_KEY,JSON.stringify(vfs))}
+function homeParts(){return ['home','lucas']}
+function displayPath(parts=cwd){return '/'+parts.join('/')}
+function fsNode(parts){
+ let p=[...parts];if(p[0]==='home'&&p[1]==='lucas')p=p.slice(2);
+ let n=vfs;for(const seg of p){if(!n||n.type!=='dir'||!n.children[seg])return null;n=n.children[seg]}return n
+}
+function normalizePath(path,base=cwd){
+ if(!path||path==='~')return homeParts();
+ let p=path.startsWith('/')?[]:[...base];
+ if(path.startsWith('/home/lucas')){p=homeParts();path=path.slice('/home/lucas'.length)}
+ else if(path.startsWith('~/')){p=homeParts();path=path.slice(2)}
+ for(const seg of path.split('/').filter(Boolean)){if(seg==='.')continue;if(seg==='..'){if(p.length>2)p.pop()}else p.push(seg)}
+ return p
+}
+function fsParent(path){const p=normalizePath(path);return {parent:fsNode(p.slice(0,-1)),name:p[p.length-1],parts:p}}
+function renderFiles(push=false){
+ const n=fsNode(cwd);if(!n||n.type!=='dir')return;
+ if(push)fileHistory.push([...cwd]);
+ $('filePath').textContent=displayPath();
+ $('folders').innerHTML='';
+ Object.entries(n.children).sort((a,b)=>(a[1].type===b[1].type?a[0].localeCompare(b[0]):a[1].type==='dir'?-1:1)).forEach(([name,node])=>{
+   const el=document.createElement('div');el.className='folder file-item '+node.type;el.dataset.name=name;el.dataset.type=node.type;
+   const ico=document.createElement('span');ico.className='ficon';ico.textContent=node.type==='dir'?'▰':'▤';el.append(ico,document.createTextNode(name));
+   el.onclick=()=>node.type==='dir'?openFolder(el):openFile(name);$('folders').appendChild(el)
+ })
+}
+function openFolder(el){const name=el.dataset.name||el.textContent.trim();const next=[...cwd,name];if(fsNode(next)?.type==='dir'){fileHistory.push([...cwd]);cwd=next;renderFiles();syncTermPrompt()}}
+function openPath(name){const p=normalizePath('/home/lucas/'+name);if(fsNode(p)?.type==='dir'){fileHistory.push([...cwd]);cwd=p;renderFiles();syncTermPrompt();document.querySelectorAll('.side').forEach(x=>x.classList.toggle('active',x.textContent.includes(name)))}}
+function openFile(name){const n=fsNode([...cwd,name]);if(!n||n.type!=='file')return;notify(name,(n.content||'').slice(0,100)||'Arquivo vazio','▤')}
+function fileHome(){fileHistory.push([...cwd]);cwd=homeParts();renderFiles();syncTermPrompt();document.querySelectorAll('.side').forEach((x,i)=>x.classList.toggle('active',i===0))}
+function fileBack(){if(fileHistory.length){cwd=fileHistory.pop();renderFiles();syncTermPrompt()}else fileHome()}
+function fsWalk(node=vfs,p='/home/lucas',out=[]){if(node.type!=='dir')return out;for(const [name,n] of Object.entries(node.children)){const path=p+'/'+name;out.push({name,path,type:n.type});if(n.type==='dir')fsWalk(n,path,out)}return out}
+function renderFsSearch(q){
+ let box=$('fsSearchResults');if(!box){box=document.createElement('div');box.id='fsSearchResults';box.className='fs-search-results';$('launcherApps').appendChild(box)}
+ box.innerHTML='';if(!q){box.classList.remove('show');return}
+ const hits=fsWalk().filter(x=>(x.name+' '+x.path).toLowerCase().includes(q)).slice(0,6);
+ if(!hits.length){box.classList.remove('show');return}box.classList.add('show');
+ hits.forEach(h=>{const b=document.createElement('button');b.className='fs-hit';b.textContent=(h.type==='dir'?'▰ ':'▤ ')+h.path;b.onclick=()=>{const p=normalizePath(h.type==='dir'?h.path:h.path.split('/').slice(0,-1).join('/'));cwd=p;renderFiles();openQuick('filesWin')};box.appendChild(b)})
+}
+function syncTermPrompt(){const rel=cwd.slice(2).join('/');const b=document.querySelector('.termline b');if(b)b.textContent='lucas@LS-OS '+(rel?'~/'+rel:'~')+' $'}
+function termEscape(s){return String(s).replace(/[<>&]/g,x=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[x]))}
+function termList(n){return Object.entries(n.children).sort((a,b)=>a[0].localeCompare(b[0])).map(([k,v])=>k+(v.type==='dir'?'/':'')).join('  ')}
 const termCommands={
- help:'Comandos: help, clear, neofetch, ls, pwd, date, whoami, uname, echo, open, reboot',
- neofetch:'LS-OS (Arch Linux)\\nKernel: 7.2.9-arch1-1\\nWM: Hyprland\\nShell: zsh\\nMemory: 3.1 GiB / 8 GiB',
- ls:'Área_de_Trabalho  Documentos  Downloads  Imagens  Música  Projetos  Vídeos',
- pwd:'/home/lucas',whoami:'lucas',uname:'Linux LS-OS 7.2.9-arch1-1 x86_64'
+ help:'Comandos: help, clear, ls, cd, pwd, mkdir, touch, cat, rm, cp, mv, echo, history, neofetch, date, whoami, uname, open, reboot',
+ neofetch:'LS-OS (Arch Linux)\nKernel: 7.2.9-arch1-1\nWM: Hyprland\nShell: zsh\nMemory: 3.1 GiB / 8 GiB',
+ whoami:'lucas',uname:'Linux LS-OS 7.2.9-arch1-1 x86_64'
 };
-function runTerm(raw){let input=raw.trim(),parts=input.split(/\\s+/),cmd=parts[0].toLowerCase(),out='';if(!input)return;if(cmd==='clear'){$('termHistory').innerHTML='';return}if(cmd==='date')out=new Date().toString();else if(cmd==='echo')out=parts.slice(1).join(' ');else if(cmd==='open'){let a=(parts[1]||'').toLowerCase();if(a.includes('file')||a.includes('arquivo'))toggleWindow('filesWin');else if(a.includes('setting')||a.includes('config'))openQuick('settingsWin');else if(a.includes('browser')||a.includes('naveg'))openQuick('browserWin');else out='Uso: open files | settings | browser'}else if(cmd==='reboot'){out='Reinicialização simulada.';notify('Sistema','Reinicialização simulada.','↻')}else out=termCommands[cmd]??('comando não encontrado: '+cmd);$('termHistory').innerHTML+='<span style="color:#39aaff">lucas@LS-OS ~ $</span> '+input.replace(/[<>&]/g,s=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[s]))+'\\n'+out+'\\n';$('termHistory').parentElement.scrollTop=99999}
+const termHistoryCmd=[];
+function runTerm(raw){
+ const input=raw.trim();if(!input)return;termHistoryCmd.push(input);
+ const parts=input.match(/"[^"]*"|'[^']*'|\S+/g)?.map(x=>x.replace(/^['"]|['"]$/g,''))||[];
+ const cmd=(parts.shift()||'').toLowerCase();let out='';
+ if(cmd==='clear'){$('termHistory').innerHTML='';return}
+ if(cmd==='help'||cmd==='neofetch'||cmd==='whoami'||cmd==='uname')out=termCommands[cmd];
+ else if(cmd==='pwd')out=displayPath();
+ else if(cmd==='ls'){const n=fsNode(normalizePath(parts[0]||'.'));out=n?.type==='dir'?termList(n):'ls: caminho não encontrado'}
+ else if(cmd==='cd'){const p=normalizePath(parts[0]||'~');const n=fsNode(p);if(n?.type==='dir'){cwd=p;renderFiles();syncTermPrompt()}else out='cd: diretório não encontrado'}
+ else if(cmd==='mkdir'||cmd==='touch'){const arg=parts[0];if(!arg)out=cmd+': informe um nome';else{const x=fsParent(arg);if(!x.parent||x.parent.type!=='dir')out=cmd+': caminho inválido';else if(x.parent.children[x.name])out=cmd+': já existe';else{x.parent.children[x.name]=cmd==='mkdir'?{type:'dir',children:{}}:{type:'file',content:''};saveFS();renderFiles()}}}
+ else if(cmd==='cat'){const n=fsNode(normalizePath(parts[0]||''));out=n?.type==='file'?(n.content||''):'cat: arquivo não encontrado'}
+ else if(cmd==='rm'){const x=fsParent(parts[0]||'');if(x.parent?.children?.[x.name]){delete x.parent.children[x.name];saveFS();renderFiles()}else out='rm: arquivo ou diretório não encontrado'}
+ else if(cmd==='cp'||cmd==='mv'){const a=fsParent(parts[0]||''),b=fsParent(parts[1]||'');const src=a.parent?.children?.[a.name];if(!src||!b.parent)out=cmd+': caminho inválido';else{b.parent.children[b.name]=JSON.parse(JSON.stringify(src));if(cmd==='mv')delete a.parent.children[a.name];saveFS();renderFiles()}}
+ else if(cmd==='date')out=new Date().toString();
+ else if(cmd==='history')out=termHistoryCmd.map((x,i)=>(i+1)+'  '+x).join('\n');
+ else if(cmd==='echo')out=parts.join(' ');
+ else if(cmd==='open'){let a=(parts[0]||'').toLowerCase();if(a.includes('file')||a.includes('arquivo'))openQuick('filesWin');else if(a.includes('setting')||a.includes('config'))openQuick('settingsWin');else if(a.includes('browser')||a.includes('naveg'))openQuick('browserWin');else if(a.includes('note')||a.includes('nota'))openQuick('editorWin');else out='Uso: open files | settings | browser | notes'}
+ else if(cmd==='reboot'){out='Reinicialização simulada.';notify('Sistema','Reinicialização simulada.','↻')}
+ else out='comando não encontrado: '+cmd;
+ $('termHistory').innerHTML+='<span style="color:#39aaff">lucas@LS-OS '+(cwd.length>2?'~/'+cwd.slice(2).join('/'):'~')+' $</span> '+termEscape(input)+'\n'+termEscape(out)+'\n';
+ $('termHistory').parentElement.scrollTop=99999
+}
 $('termInput').addEventListener('keydown',e=>{if(e.key==='Enter'){runTerm(e.target.value);e.target.value=''}});
+renderFiles();syncTermPrompt();
 
 $('calcInput').addEventListener('keydown',e=>{if(e.key==='Enter')calc()});
 
