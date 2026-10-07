@@ -55,6 +55,8 @@ button,input,.app,.cat,.dock,.dock button,.desktop-icon,.window,.panel,.island,.
 .filebody.list-mode .folders{display:block}.filebody.list-mode .folder{display:flex;align-items:center;gap:12px;margin:4px 0;padding:10px 12px}.filebody.list-mode .ficon{font-size:18px}.cat.active{background:#159aff22!important;color:#fff}.side{cursor:pointer}.side:hover{background:#ffffff0a}
 
 .fs-search-results{display:none;grid-column:1/-1;border-top:1px solid #ffffff12;margin-top:8px;padding-top:8px}.fs-search-results.show{display:block}.fs-hit{display:flex;width:100%;border:0;background:transparent;color:#cfe4f4;padding:8px 10px;border-radius:8px;text-align:left;cursor:pointer}.fs-hit:hover{background:#159aff18}.file-item{cursor:pointer}.file-item.file .ficon{opacity:.8}.termline b{white-space:nowrap}
+
+.browser-shell{height:100%;display:flex;flex-direction:column;gap:8px}.browser-nav{display:grid;grid-template-columns:auto auto auto auto 1fr auto;gap:6px;align-items:center}.browser-nav button{min-width:34px}.browser-address{width:100%;min-width:0}.browser-view{position:relative;flex:1;min-height:360px;border:1px solid #ffffff14;border-radius:12px;overflow:hidden;background:#06101c}.browser-frame{width:100%;height:100%;border:0;background:#fff}.browser-home{position:absolute;inset:0;overflow:auto;padding:24px;background:linear-gradient(145deg,rgba(4,17,31,.97),rgba(2,9,20,.94))}.browser-home.hidden{display:none}.browser-home h2{margin:0 0 5px}.browser-projects{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-top:20px}.browser-project{border:1px solid #ffffff16;background:#ffffff08;border-radius:14px;padding:16px;cursor:pointer;transition:.18s}.browser-project:hover{transform:translateY(-2px);border-color:#35a9ff66;background:#159aff12}.browser-project strong{display:block;font-size:16px;margin-bottom:6px}.browser-project small{color:#88a8bd}.browser-status{font-size:11px;color:#7797ad;margin-top:10px}.browser-external{display:none;position:absolute;right:14px;bottom:14px;z-index:3}.browser-external.show{display:block}
 </style>
 </head><body><div class="wallpaper" id="wallpaper"></div><div class="desktop-hint">Clique com o botão direito para ações rápidas · tecla Meta abre o LS Launcher</div>
 <header class="top">
@@ -118,7 +120,15 @@ button,input,.app,.cat,.dock,.dock button,.desktop-icon,.window,.panel,.island,.
 </div>
 
 
-<div class="window quickwin hidden" id="browserWin"><div class="titlebar">◉ &nbsp; Navegador<div class="controls"><button onclick="minWin('browserWin')">—</button><button onclick="maxWin('browserWin')">□</button><button onclick="closeWin('browserWin')">×</button></div></div><div class="quickbody"><div class="browserbar"><input id="urlbox" value="https://www.google.com" aria-label="Endereço"><button onclick="goWeb()">Ir</button></div><div class="cards"><div class="card"><h3>LS Start</h3><p>Uma página inicial limpa para o LS-OS. Digite um endereço e abra no navegador real.</p></div><div class="card"><h3>GitHub</h3><p>Atalho para desenvolvimento e projetos.</p><button class="primary" onclick="window.open('https://github.com','_blank')">Abrir GitHub</button></div></div></div></div>
+<div class="window quickwin hidden" id="browserWin"><div class="titlebar">◉ &nbsp; Navegador LS<div class="controls"><button onclick="minWin('browserWin')">—</button><button onclick="maxWin('browserWin')">□</button><button onclick="closeWin('browserWin')">×</button></div></div><div class="quickbody browser-shell">
+<div class="browser-nav"><button onclick="browserBack()" title="Voltar">←</button><button onclick="browserForward()" title="Avançar">→</button><button onclick="browserReload()" title="Recarregar">↻</button><button onclick="browserHome()" title="Início">⌂</button><input id="urlbox" class="browser-address" value="ls://home" aria-label="Endereço"><button class="primary" onclick="goWeb()">Ir</button></div>
+<div class="browser-view"><div id="browserHome" class="browser-home"><h2>LS Start</h2><p>Projetos web integrados ao LS-OS.</p><div class="browser-projects">
+<div class="browser-project" onclick="browserOpenProject('MONI Weather')"><strong>MONI Weather</strong><small>Meteorologia em tempo real</small></div>
+<div class="browser-project" onclick="browserOpenProject('FastFox App')"><strong>FastFox App</strong><small>Assetto Corsa · ferramentas</small></div>
+<div class="browser-project" onclick="browserOpenProject('LS-OS')"><strong>LS-OS</strong><small>Interface do próprio sistema</small></div>
+</div><div class="browser-status">Os projetos são carregados diretamente de seus GitHub Pages dentro desta janela.</div></div>
+<iframe id="browserFrame" class="browser-frame" title="Navegador LS" referrerpolicy="strict-origin-when-cross-origin"></iframe><button id="browserExternal" class="primary browser-external" onclick="browserExternal()">↗ Abrir externamente</button></div>
+</div></div>
 <div class="window quickwin hidden" id="settingsWin"><div class="titlebar">⚙ &nbsp; Configurações<div class="controls"><button onclick="minWin('settingsWin')">—</button><button onclick="maxWin('settingsWin')">□</button><button onclick="closeWin('settingsWin')">×</button></div></div><div class="quickbody"><h2 style="margin-top:0">Configurações</h2><div class="cards"><div class="card"><h3>Aparência</h3><div class="toggle"><span>Efeito de vidro</span><span class="switch" onclick="toggleGlass(this)"></span></div><div class="toggle"><span>Tema escuro</span><span class="switch" onclick="toggleTheme(this)"></span></div></div><div class="card"><h3>Sistema</h3><p>LS-OS · Arch Linux · Hyprland</p><p style="margin-top:8px">Interface experimental do ambiente LS.</p></div><div class="card"><h3>Rede</h3><p><span class="green">● Online</span><br>Ethernet / Wi-Fi disponíveis</p></div><div class="card"><h3>Bluetooth</h3><p>JBL 510BT conectado</p></div></div></div></div>
 <div class="window quickwin hidden" id="monitorWin"><div class="titlebar">⌁ &nbsp; Monitor do Sistema<div class="controls"><button onclick="minWin('monitorWin')">—</button><button onclick="maxWin('monitorWin')">□</button><button onclick="closeWin('monitorWin')">×</button></div></div><div class="quickbody"><h2 style="margin-top:0">Desempenho</h2><div class="cards"><div class="card"><h3>CPU</h3><p id="monCpu" style="font-size:28px;color:#4ab1ff">12%</p></div><div class="card"><h3>Memória</h3><p style="font-size:28px;color:#4ab1ff">3.1 / 8 GB</p></div><div class="card"><h3>GPU</h3><p style="font-size:28px;color:#4ab1ff">18%</p></div><div class="card"><h3>Temperatura</h3><p style="font-size:28px;color:#4ab1ff">47 °C</p></div></div></div></div>
 <div class="window quickwin hidden" id="editorWin"><div class="titlebar">▤ &nbsp; Notas · Projetos<div class="controls"><button onclick="minWin('editorWin')">—</button><button onclick="maxWin('editorWin')">□</button><button onclick="closeWin('editorWin')">×</button></div></div><div class="quickbody">
@@ -180,7 +190,25 @@ function openQuick(id){let w=$(id);w.classList.remove('hidden','minimized');focu
 function closeWin(id){$(id).classList.add('hidden');syncDock()}
 function minWin(id){$(id).classList.add('minimized');syncDock()}
 function maxWin(id){let w=$(id);w.classList.toggle('maximized');focusWin(w)}
-function goWeb(){let v=$('urlbox').value.trim();if(!/^https?:\/\//i.test(v))v='https://'+v;window.open(v,'_blank')}
+const browserProjects={
+ 'MONI Weather':'https://lucassudati.github.io/moni-weather/',
+ 'FastFox App':'https://lucassudati.github.io/FastFox_App/',
+ 'LS-OS':'https://lucassudati.github.io/LS-OS/'
+};
+let browserHistory=['ls://home'],browserIndex=0,browserCurrent='ls://home';
+function browserNavigate(url,push=true){
+ url=(url||'').trim();if(!url||url==='ls://home'){browserCurrent='ls://home';$('urlbox').value='ls://home';$('browserHome').classList.remove('hidden');$('browserFrame').src='about:blank';$('browserExternal').classList.remove('show')}
+ else{if(!/^https?:\/\//i.test(url))url='https://'+url;browserCurrent=url;$('urlbox').value=url;$('browserHome').classList.add('hidden');$('browserFrame').src=url;$('browserExternal').classList.add('show')}
+ if(push){browserHistory=browserHistory.slice(0,browserIndex+1);browserHistory.push(browserCurrent);browserIndex=browserHistory.length-1}
+}
+function goWeb(){browserNavigate($('urlbox').value)}
+function browserHome(){browserNavigate('ls://home')}
+function browserOpenProject(name){if(browserProjects[name])browserNavigate(browserProjects[name])}
+function browserBack(){if(browserIndex>0){browserIndex--;browserNavigate(browserHistory[browserIndex],false)}}
+function browserForward(){if(browserIndex<browserHistory.length-1){browserIndex++;browserNavigate(browserHistory[browserIndex],false)}}
+function browserReload(){if(browserCurrent==='ls://home')browserHome();else $('browserFrame').src=browserCurrent}
+function browserExternal(){if(browserCurrent!=='ls://home')window.open(browserCurrent,'_blank','noopener')}
+$('urlbox').addEventListener('keydown',e=>{if(e.key==='Enter')goWeb()});
 function notify(title,msg,icon='●'){let box=$('toasts');let t=document.createElement('div');t.className='toast';t.innerHTML='<span class="ticon">'+icon+'</span><div><strong>'+title+'</strong><span class="muted">'+msg+'</span></div><button onclick="this.parentElement.remove()">×</button>';box.prepend(t);setTimeout(()=>t.remove(),5000)}
 function fakeScreenshot(){launcher.classList.add('closed');notify('Captura de tela','Simulação: imagem salva em ~/Imagens','▣')}
 
@@ -288,7 +316,7 @@ function runTerm(raw){
  else if(cmd==='date')out=new Date().toString();
  else if(cmd==='history')out=termHistoryCmd.map((x,i)=>(i+1)+'  '+x).join('\n');
  else if(cmd==='echo')out=parts.join(' ');
- else if(cmd==='open'){let a=(parts[0]||'').toLowerCase();if(a.includes('file')||a.includes('arquivo'))openQuick('filesWin');else if(a.includes('setting')||a.includes('config'))openQuick('settingsWin');else if(a.includes('browser')||a.includes('naveg'))openQuick('browserWin');else if(a.includes('note')||a.includes('nota'))openQuick('editorWin');else out='Uso: open files | settings | browser | notes'}
+ else if(cmd==='open'){let a=(parts[0]||'').toLowerCase();if(a.includes('file')||a.includes('arquivo'))openQuick('filesWin');else if(a.includes('setting')||a.includes('config'))openQuick('settingsWin');else if(a.includes('browser')||a.includes('naveg'))openQuick('browserWin');else if(a.includes('note')||a.includes('nota'))openQuick('editorWin');else{const p=Object.keys(browserProjects).find(x=>x.toLowerCase().replace(/\s/g,'').includes(a.replace(/\s/g,'')));if(p){openQuick('browserWin');browserOpenProject(p)}else out='Uso: open files | settings | browser | notes | moni | fastfox | ls-os'}}
  else if(cmd==='reboot'){out='Reinicialização simulada.';notify('Sistema','Reinicialização simulada.','↻')}
  else out='comando não encontrado: '+cmd;
  $('termHistory').innerHTML+='<span style="color:#39aaff">lucas@LS-OS '+(cwd.length>2?'~/'+cwd.slice(2).join('/'):'~')+' $</span> '+termEscape(input)+'\n'+termEscape(out)+'\n';
