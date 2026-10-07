@@ -21,9 +21,11 @@ O LS-OS está atualmente na fase de construção e estabilização do ambiente g
 | Wofi | ✅ Instalado |
 | Thunar | ✅ Instalado |
 | Mako | ✅ Instalado |
-| Kitty | ⚠️ Instalado, mas dispara crash na VM |
+| Foot | ✅ Terminal padrão e estável na VM |
+| Kitty | ⚠️ Incompatível com a VM atual; não utilizado |
 | Clipboard Windows ↔ Wayland | ⚠️ Em diagnóstico |
-| Identidade visual LS-OS | ⏳ Próxima etapa |
+| Wallpaper LS-OS | ✅ Aplicado com AWWW |
+| Identidade visual LS-OS | 🚧 Em implementação |
 | Configuração definitiva do desktop | ⏳ Próxima etapa |
 
 ## Plataforma atual de desenvolvimento
@@ -74,7 +76,7 @@ LS-OS
 │   └── Nerd Fonts
 │
 ├── Aplicativos
-│   ├── Kitty
+│   ├── Foot
 │   ├── Thunar
 │   └── Pavucontrol
 │
@@ -153,7 +155,7 @@ A configuração foi recuperada. Alterações futuras devem usar a API Lua efeti
 
 ### Interface
 
-- `kitty`
+- `foot`
 - `waybar`
 - `wofi`
 - `mako`
@@ -237,59 +239,56 @@ exec start-hyprland
 
 A solução definitiva ainda não foi escolhida.
 
-## Problema atual: crash ao abrir o Kitty
+## Terminal: Kitty substituído pelo Foot
 
-Este é o principal bloqueio técnico atual.
+O crash do Kitty foi isolado e deixou de ser um bloqueio para o desenvolvimento.
 
-Com a VM configurada com VMSVGA, 128 MB e aceleração 3D habilitada:
+Com VMSVGA, 128 MB e aceleração 3D habilitada, abrir o Kitty provocava crash do processo `VirtualBoxVM.exe` no host. O mesmo comportamento ocorreu mesmo após testar `LIBGL_ALWAYS_SOFTWARE=1`, portanto esse caminho não resolveu a incompatibilidade.
 
-1. O Arch Linux inicia normalmente.
-2. O login no TTY funciona.
-3. `start-hyprland` abre o desktop.
-4. O Hyprland permanece estável por vários minutos quando parado.
-5. Ao pressionar `SUPER + Q` e abrir o Kitty, o processo da VM sofre crash no host.
-6. No Windows é apresentado o erro de que a memória não pôde ser lida.
+O terminal **Foot** foi instalado e testado diretamente no Wayland. Ele abriu normalmente e permaneceu estável. A variável de terminal do Hyprland foi então alterada de:
 
-### Teste com 3D desabilitado
+```lua
+local terminal = "kitty"
+```
 
-Com VMSVGA + 128 MB e aceleração 3D desabilitada, o Hyprland não iniciou corretamente.
+para:
 
-Por enquanto, a aceleração 3D precisa permanecer habilitada.
+```lua
+local terminal = "foot"
+```
 
-### Hipótese atual
+Após reiniciar o Hyprland, os atalhos passaram a abrir o Foot sem provocar crash. O Foot é, portanto, o terminal padrão atual do LS-OS na VM de desenvolvimento.
 
-O comportamento aponta para um problema no caminho gráfico usado ao criar/renderizar uma nova janela:
+O Kitty permanece apenas como registro do problema encontrado e não é utilizado no fluxo normal.
+
+## Wallpaper e AWWW
+
+O wallpaper oficial do LS-OS está em uso no ambiente Hyprland. O `hyprpaper` foi testado, mas apresentou incompatibilidade com a superfície Wayland/GBM no VirtualBox, incluindo falha de segmentação.
+
+Como alternativa foi adotado o **AWWW** (sucessor do SWWW), que reconheceu corretamente o monitor virtual e conseguiu exibir o wallpaper.
+
+O monitor atual é:
 
 ```text
-Kitty
-  ↓
-Wayland / OpenGL
-  ↓
-Mesa
-  ↓
-vmwgfx / VMSVGA
-  ↓
-VirtualBox 3D
-  ↓
-Windows host
-  ↓
-CRASH
+Virtual-1
 ```
 
-Isso ainda é uma hipótese de diagnóstico, não uma causa confirmada.
+O wallpaper está em:
 
-### Próximo teste
-
-No próximo teste será iniciado o sistema pelo TTY e executado:
-
-```bash
-export LIBGL_ALWAYS_SOFTWARE=1
-start-hyprland
+```text
+/home/lucas/Pictures/Wallpapers/wallpaper.png
 ```
 
-Depois será aberto o Kitty com `SUPER + Q`.
+O AWWW é iniciado pelo evento `hyprland.start` da configuração Lua. O wallpaper já carrega automaticamente ao iniciar o Hyprland.
 
-O objetivo é verificar se a renderização por software evita o crash ao criar a janela.
+Também foram definidos:
+
+```lua
+force_default_wallpaper = 0
+disable_hyprland_logo = true
+```
+
+Isso remove o wallpaper/logo padrão. Ainda está em refinamento a transição visual inicial: o compositor inicia e faz seu fade antes de o AWWW apresentar o wallpaper do LS-OS.
 
 ## Clipboard compartilhado
 
@@ -323,11 +322,11 @@ Arch Linux instalado, boot funcional, usuário configurado e conjunto inicial de
 
 ### 2. Ambiente gráfico — em estabilização
 
-Hyprland inicia, mas o caminho gráfico VirtualBox/Kitty ainda precisa ser estabilizado ou contornado.
+Hyprland inicia e o problema de terminal foi contornado com o Foot. A etapa atual é a implementação e refinamento visual do desktop.
 
-### 3. Desktop LS-OS — próximo estágio
+### 3. Desktop LS-OS — em desenvolvimento
 
-Depois da estabilização serão desenvolvidos:
+A personalização do desktop já começou. O wallpaper oficial está aplicado e os próximos componentes serão refinados:
 
 - identidade visual própria;
 - configuração definitiva do Hyprland;
