@@ -184,7 +184,7 @@ function fakeScreenshot(){launcher.classList.add('closed');notify('Captura de te
 
 function quickStatus(title,msg){notify(title,msg)}
 function launcherCategory(btn,kind){document.querySelectorAll('.cat').forEach(x=>x.classList.remove('active'));btn.classList.add('active');document.querySelectorAll('.app').forEach(a=>{a.style.display=(kind==='all'||(a.dataset.name||'').includes(kind))?'':'none'})}
-function launcherAction(btn,id){document.querySelectorAll('.cat').forEach(x=>x.classList.remove('active'));btn.classList.add('active');openQuick(id);toggleLauncher()}
+function launcherAction(btn,id){document.querySelectorAll('.cat').forEach(x=>x.classList.remove('active'));btn.classList.add('active');openQuick(id)}
 function musicDemo(){notify('Música','Player de música será conectado ao sistema real do LS-OS.')}
 function openPath(name){$('filePath').textContent='/home/lucas/'+name;document.querySelectorAll('.side').forEach(x=>x.classList.toggle('active',x.textContent.includes(name)));$('folders').innerHTML='<div class="folder" onclick="notify(\'Arquivos\',\'Item de demonstração aberto\')"><span class="ficon">▤</span>'+name+' · exemplo</div>'}
 function fileSearch(){const q=prompt('Buscar em /home/lucas:');if(q&&q.trim())notify('Busca de arquivos','Procurando por “'+q.trim()+'” no protótipo.')}
@@ -206,7 +206,7 @@ function lockScreen(){deck.classList.add('closed');notify('Sessão','Tela bloque
 function toggleGlass(el){el.classList.toggle('off');document.body.classList.toggle('no-glass')}
 function toggleTheme(el){el.classList.toggle('off');document.body.classList.toggle('light-ui')}
 function openFolder(el){let name=el.textContent.trim();$('filePath').textContent='/home/lucas/'+name;document.querySelectorAll('#folders .folder').forEach(x=>x.style.opacity=x===el?'1':'.45');notify('Arquivos',name+' aberto.','▰')}
-function fileHome(){$('filePath').textContent='/home/lucas';document.querySelectorAll('#folders .folder').forEach(x=>x.style.opacity='1')}
+function fileHome(){$('filePath').textContent='/home/lucas';$('folders').innerHTML="<div class=\"folder\" onclick=\"openFolder(this)\"><span class=\"ficon\">▰</span>Área de Trabalho</div><div class=\"folder\" onclick=\"openFolder(this)\"><span class=\"ficon\">▰</span>Documentos</div><div class=\"folder\" onclick=\"openFolder(this)\"><span class=\"ficon\">▰</span>Downloads</div><div class=\"folder\" onclick=\"openFolder(this)\"><span class=\"ficon\">▰</span>Imagens</div><div class=\"folder\" onclick=\"openFolder(this)\"><span class=\"ficon\">▰</span>Música</div><div class=\"folder\" onclick=\"openFolder(this)\"><span class=\"ficon\">▰</span>Vídeos</div><div class=\"folder\" onclick=\"openFolder(this)\"><span class=\"ficon\">▰</span>Projetos</div><div class=\"folder\" onclick=\"openFolder(this)\"><span class=\"ficon\">▰</span>Público</div>";document.querySelectorAll('.side').forEach((x,i)=>x.classList.toggle('active',i===0))}
 function fileBack(){fileHome()}
 const termCommands={
  help:'Comandos: help, clear, neofetch, ls, pwd, date, whoami, uname, echo, open, reboot',
@@ -229,13 +229,16 @@ let activeNoteRepo='LS-OS';
 function mdEscape(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
 function renderMarkdown(md){
  let x=mdEscape(md);
- x=x.replace(/\`\`\`([\\s\\S]*?)\`\`\`/g,(m,p)=>'<pre><code>'+p.trim()+'</code></pre>');
+ const blocks=[];
+ x=x.replace(/\x60\x60\x60([\\s\\S]*?)\x60\x60\x60/g,(m,p)=>{blocks.push('<pre><code>'+p.trim()+'</code></pre>');return '@@CODE'+(blocks.length-1)+'@@'});
  x=x.replace(/^### (.+)$/gm,'<h3>$1</h3>').replace(/^## (.+)$/gm,'<h2>$1</h2>').replace(/^# (.+)$/gm,'<h1>$1</h1>');
- x=x.replace(/^> (.+)$/gm,'<blockquote>$1</blockquote>').replace(/^[-*] (.+)$/gm,'<div>• $1</div>');
- x=x.replace(/!\\[([^\\]]*)\\]\\(([^)]+)\\)/g,'<img alt="$1" src="$2">');
- x=x.replace(/\\[([^\\]]+)\\]\\((https?:\\/\\/[^)]+)\\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>');
- x=x.replace(/\`([^\`]+)\`/g,'<code>$1</code>').replace(/\\*\\*([^*]+)\\*\\*/g,'<strong>$1</strong>');
- return x.replace(/\\n\\n/g,'<br><br>').replace(/\\n/g,'<br>');
+ x=x.replace(/^&gt; (.+)$/gm,'<blockquote>$1</blockquote>').replace(/^[-*] (.+)$/gm,'<div>• $1</div>');
+ x=x.replace(/!\[([^\]]*)\]\(([^)]+)\)/g,'<img alt="$1" src="$2">');
+ x=x.replace(/\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>');
+ x=x.replace(/\x60([^\x60]+)\x60/g,'<code>$1</code>').replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>');
+ x=x.replace(/\n\n/g,'<br><br>').replace(/\n/g,'<br>');
+ blocks.forEach((b,i)=>x=x.replace('@@CODE'+i+'@@',b));
+ return x;
 }
 async function loadProjectNote(key,btn){
  activeNoteRepo=noteRepos[key]||key;
@@ -251,7 +254,7 @@ function openLocalNote(btn){document.querySelectorAll('.note-project').forEach(x
 const originalOpenQuick=openQuick;
 openQuick=function(id){originalOpenQuick(id);if(id==='editorWin'&&!$('editorWin').dataset.loaded){$('editorWin').dataset.loaded='1';loadProjectNote('LS-OS',document.querySelector('#editorWin .note-project'))}}
 const wsState={current:1};
-document.querySelectorAll('.ws').forEach((b,i)=>b.onclick=()=>{document.querySelectorAll('.ws').forEach(x=>x.classList.remove('active'));b.classList.add('active');wsState.current=i+1;$('wsScreen').textContent='WORKSPACE '+(i+1);setTimeout(()=>$('wsScreen').textContent='',500);document.querySelectorAll('.window').forEach(w=>{if(w.dataset.workspace&&+w.dataset.workspace!==i+1)w.classList.add('hidden')});notify('Workspace','Área '+(i+1)+' ativa.','▦')});
+function switchWorkspace(n){if(n<1||n>4)return;wsState.current=n;document.querySelectorAll('.ws').forEach((b,i)=>b.classList.toggle('active',i===n-1));$('wsScreen').textContent='WORKSPACE '+n;setTimeout(()=>$('wsScreen').textContent='',500);document.querySelectorAll('.window').forEach(w=>{if(w.dataset.workspace&&+w.dataset.workspace!==n)w.classList.add('hidden')});notify('Workspace','Área '+n+' ativa.','▦')}
 document.addEventListener('keydown',e=>{if(e.altKey&&e.key>='1'&&e.key<='4')document.querySelectorAll('.ws')[+e.key-1].click();if(document.body.dataset.locked==='1'){delete document.body.dataset.locked;notify('Sessão','Bem-vindo de volta, lucas.','●')}});
 
 const wp=new Image();wp.src='./assets/wallpaper.png';wp.onerror=()=>{document.body.style.background='radial-gradient(circle at 60% 35%,#063d66 0,#04192c 34%,#020914 72%)';notify('Wallpaper','Não foi possível decodificar assets/wallpaper.png; usando fundo de segurança.','!')};
