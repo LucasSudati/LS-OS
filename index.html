@@ -157,7 +157,7 @@ function maxWin(id){let w=$(id);w.classList.toggle('maximized');focusWin(w)}
 function goWeb(){let v=$('urlbox').value.trim();if(!/^https?:\/\//i.test(v))v='https://'+v;window.open(v,'_blank')}
 function notify(title,msg,icon='●'){let box=$('toasts');let t=document.createElement('div');t.className='toast';t.innerHTML='<span class="ticon">'+icon+'</span><div><strong>'+title+'</strong><span class="muted">'+msg+'</span></div><button onclick="this.parentElement.remove()">×</button>';box.prepend(t);setTimeout(()=>t.remove(),5000)}
 function fakeScreenshot(){launcher.classList.add('closed');notify('Captura de tela','Simulação: imagem salva em ~/Imagens','▣')}
-function calc(){try{let v=$('calcInput').value;if(!/^[0-9+\-*/().% ]+$/.test(v))throw 0;$('calcOut').textContent=Function('"use strict";return ('+v+')')()}catch(e){$('calcOut').textContent='Expressão inválida'}}
+function calc(){try{let v=$('calcInput').value;if(!/^[0-9+\-*\/().% ]+$/.test(v))throw 0;$('calcOut').textContent=Function('"use strict";return ('+v+')')()}catch(e){$('calcOut').textContent='Expressão inválida'}}
 
 setInterval(()=>{let el=$('monCpu');if(el)el.textContent=$('cpuText').textContent},1000);
 document.addEventListener('keydown',e=>{if(e.ctrlKey&&e.altKey&&e.key.toLowerCase()==='t'){e.preventDefault();let w=$('terminalWin');w.classList.remove('hidden','minimized');focusWin(w);syncDock()}if(e.ctrlKey&&e.key.toLowerCase()==='l'){e.preventDefault();toggleLauncher()}});
