@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LS-OS Interface Concept</title>
+<style>
+:root{--bg:#050a10;--panel:rgba(5,14,24,.78);--panel2:rgba(8,20,34,.88);--line:rgba(50,151,255,.32);--blue:#168cff;--blue2:#6ab7ff;--text:#e8f3ff;--muted:#7890a7;--good:#45dc87;--danger:#ff5d68;--r:16px}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;font-family:"JetBrains Mono","Segoe UI",sans-serif;color:var(--text);background:#06101b}
+body{background:radial-gradient(circle at 75% 28%,rgba(27,105,177,.18),transparent 26%),linear-gradient(rgba(1,8,15,.38),rgba(1,8,15,.78)),url("https://images.unsplash.com/photo-1464278533981-50106e6176b1?auto=format&fit=crop&w=2400&q=90") center/cover no-repeat}
+body:after{content:"";position:fixed;inset:0;pointer-events:none;background-image:linear-gradient(rgba(38,139,230,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(38,139,230,.025) 1px,transparent 1px);background-size:40px 40px}
+button{font:inherit;color:inherit}.top{position:fixed;top:16px;left:18px;right:18px;height:48px;display:flex;align-items:center;justify-content:space-between;z-index:20}.island{height:44px;display:flex;align-items:center;gap:12px;padding:0 14px;border:1px solid var(--line);border-radius:14px;background:rgba(3,11,20,.8);backdrop-filter:blur(18px);box-shadow:0 10px 30px #0005}.brand{font-weight:900;font-size:20px;letter-spacing:-2px;color:var(--blue2)}.ws{width:34px;height:28px;border:0;border-radius:8px;background:transparent}.ws.active{background:var(--blue)}.status{font-size:14px;color:#a9c1d7}.status b{color:var(--text);font-weight:500}.desktop-logo{position:absolute;left:50%;top:39%;transform:translate(-50%,-50%);text-align:center;text-shadow:0 10px 40px #000}.desktop-logo .ls{font-size:74px;font-weight:900;letter-spacing:-10px;color:#9fc7ed;opacity:.72}.desktop-logo .os{letter-spacing:11px;color:#8eb9e4;margin-left:11px}.dock{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);display:flex;gap:7px;padding:8px;border:1px solid var(--line);border-radius:18px;background:rgba(3,11,20,.72);backdrop-filter:blur(20px);z-index:20}.dock button{width:48px;height:48px;border:0;border-radius:12px;background:transparent;font-size:22px;cursor:pointer}.dock button:hover{background:#168cff22}.launcher,.deck{position:fixed;top:78px;bottom:82px;border:1px solid var(--line);border-radius:var(--r);background:var(--panel);backdrop-filter:blur(26px);box-shadow:0 24px 80px #0009;z-index:10;transition:.22s ease}.launcher{left:18px;width:min(650px,calc(100vw - 36px));padding:18px}.launcher.hidden{transform:translateX(-110%);opacity:0}.deck{right:18px;width:330px;padding:18px}.deck.hidden{transform:translateX(110%);opacity:0}.search{display:flex;align-items:center;gap:10px;height:48px;padding:0 16px;border:1px solid var(--line);border-radius:13px;background:#071522}.search input{width:100%;border:0;outline:0;background:none;color:var(--text);font:inherit}.launcher-main{display:grid;grid-template-columns:180px 1fr;gap:18px;margin-top:16px;height:calc(100% - 64px)}.categories{border-right:1px solid #ffffff12;padding-right:14px}.cat{display:block;width:100%;border:0;text-align:left;padding:11px;border-radius:9px;background:transparent;color:#9bb0c4;cursor:pointer}.cat.active,.cat:hover{background:#168cff1e;color:#dceeff}.apps{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;align-content:start}.app{height:105px;border:1px solid transparent;border-radius:13px;background:#ffffff04;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;cursor:pointer}.app:hover{border-color:var(--line);background:#168cff12}.app .icon{font-size:30px}.app span:last-child{font-size:12px}.deck h2{font-size:15px;letter-spacing:1px;color:var(--blue2);margin:2px 0 20px}.metric{margin:15px 0}.metric-head{display:flex;justify-content:space-between;font-size:12px;margin-bottom:7px}.bar{height:6px;border-radius:8px;background:#10263a;overflow:hidden}.bar i{display:block;height:100%;background:linear-gradient(90deg,#0d74e8,#48a7ff);border-radius:8px}.section{border-top:1px solid #ffffff12;margin-top:20px;padding-top:17px}.section-title{font-size:11px;color:var(--blue2);letter-spacing:1px;margin-bottom:11px}.online{color:var(--good)}.quick{display:grid;grid-template-columns:1fr 1fr;gap:8px}.quick button{border:1px solid #ffffff10;background:#ffffff06;border-radius:10px;padding:11px;cursor:pointer}.quick button:hover{background:#168cff18}.window{position:absolute;left:23%;top:25%;width:560px;height:360px;background:var(--panel2);border:1px solid var(--line);border-radius:14px;box-shadow:0 30px 80px #000a;backdrop-filter:blur(20px);display:none;z-index:8}.window.show{display:block}.titlebar{height:42px;border-bottom:1px solid #ffffff10;display:flex;align-items:center;justify-content:space-between;padding:0 13px;font-size:12px}.dots{color:#ff6370}.terminal{padding:20px;color:#b9d8f4;font-size:13px;line-height:1.6}.terminal b{color:#43a6ff}.hint{position:fixed;bottom:87px;left:50%;transform:translateX(-50%);font-size:11px;color:#7d94a9;background:#030b13aa;padding:7px 12px;border-radius:8px}.power{color:var(--danger)}@media(max-width:900px){.deck{display:none}.launcher{right:18px;width:auto}.launcher-main{grid-template-columns:130px 1fr}.apps{grid-template-columns:repeat(2,1fr)}.top .center{display:none}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="island"><span class="brand">LS</span><button class="ws active">1</button><button class="ws">2</button><button class="ws">3</button><button class="ws">4</button></div>
+  <div class="island center"><b id="clock">--:--</b><span>•</span><span id="date">--</span></div>
+  <div class="island status"><span>◉</span><b>NET</b><span>⌁</span><b>BT</b><span>♪ 78%</span><span>▣ 92%</span></div>
+</header>
+
+<div class="desktop-logo"><div class="ls">LS</div><div class="os">LS-OS</div></div>
+
+<section class="launcher" id="launcher">
+  <div class="search">⌕ <input id="search" placeholder="Buscar aplicativos, arquivos ou comandos..."></div>
+  <div class="launcher-main">
+    <nav class="categories">
+      <button class="cat active">▦ Aplicativos</button><button class="cat">□ Arquivos</button><button class="cat">⚙ Configurações</button><button class="cat">◉ Sistema</button><button class="cat">◎ Internet</button><button class="cat">⌘ Desenvolvimento</button><button class="cat">♫ Multimídia</button><button class="cat power">⏻ Energia</button>
+    </nav>
+    <div class="apps" id="apps">
+      <button class="app" data-name="terminal" onclick="openTerminal()"><span class="icon">›_</span><span>Terminal</span></button>
+      <button class="app" data-name="navegador"><span class="icon">◉</span><span>Navegador</span></button>
+      <button class="app" data-name="arquivos"><span class="icon">▰</span><span>Arquivos</span></button>
+      <button class="app" data-name="configurações"><span class="icon">⚙</span><span>Configurações</span></button>
+      <button class="app" data-name="monitor"><span class="icon">⌁</span><span>Monitor</span></button>
+      <button class="app" data-name="captura"><span class="icon">▣</span><span>Captura</span></button>
+      <button class="app" data-name="editor"><span class="icon">▤</span><span>Editor</span></button>
+      <button class="app" data-name="música"><span class="icon">♫</span><span>Música</span></button>
+      <button class="app" data-name="calculadora"><span class="icon">▦</span><span>Calculadora</span></button>
+    </div>
+  </div>
+</section>
+
+<aside class="deck" id="deck">
+  <h2>LS / SYSTEM DECK</h2>
+  <div class="metric"><div class="metric-head"><span>CPU</span><span>11%</span></div><div class="bar"><i style="width:11%"></i></div></div>
+  <div class="metric"><div class="metric-head"><span>RAM</span><span>3.2 / 8 GB</span></div><div class="bar"><i style="width:40%"></i></div></div>
+  <div class="metric"><div class="metric-head"><span>GPU</span><span>18%</span></div><div class="bar"><i style="width:18%"></i></div></div>
+  <div class="metric"><div class="metric-head"><span>TEMP</span><span>47 °C</span></div><div class="bar"><i style="width:47%"></i></div></div>
+  <div class="section"><div class="section-title">REDE</div><div><span class="online">●</span> Online</div><small style="color:var(--muted)">192.168.1.100 · ↓ 12.4 MB/s</small></div>
+  <div class="section"><div class="section-title">ÁUDIO</div><div class="metric"><div class="metric-head"><span>♪ Volume</span><span>78%</span></div><div class="bar"><i style="width:78%"></i></div></div></div>
+  <div class="section"><div class="section-title">BLUETOOTH</div><div>⌁ JBL 510BT</div></div>
+  <div class="section quick"><button>⚙ Settings</button><button>▣ Bloquear</button><button>☾ Suspender</button><button class="power">⏻ Energia</button></div>
+</aside>
+
+<div class="window" id="terminal">
+  <div class="titlebar"><span><span class="dots">● ● ●</span> lucas@LS-OS: ~</span><button onclick="openTerminal()" style="border:0;background:none">×</button></div>
+  <div class="terminal"><b>lucas@LS-OS</b><br><br>OS: LS-OS (Arch Linux)<br>Kernel: 7.2.9-arch1-1<br>Desktop: Hyprland<br>Shell: zsh<br>Terminal: kitty<br>Session: Wayland<br><br><b>[lucas@LS-OS ~]$</b> <span id="cursor">█</span></div>
+</div>
+
+<div class="dock">
+  <button onclick="toggleLauncher()" title="LS Launcher">LS</button><button onclick="openTerminal()" title="Terminal">›_</button><button title="Arquivos">▰</button><button title="Navegador">◉</button><button title="Editor">▤</button><button onclick="toggleDeck()" title="System Deck">⌁</button>
+</div>
+<div class="hint">Protótipo interativo · LS abre o launcher · ⌁ abre o System Deck</div>
+
+<script>
+const launcher=document.getElementById('launcher'),deck=document.getElementById('deck'),term=document.getElementById('terminal');
+function toggleLauncher(){launcher.classList.toggle('hidden')}
+function toggleDeck(){deck.classList.toggle('hidden')}
+function openTerminal(){term.classList.toggle('show');launcher.classList.add('hidden')}
+function tick(){const d=new Date();document.getElementById('clock').textContent=d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});document.getElementById('date').textContent=d.toLocaleDateString('pt-BR',{day:'2-digit',month:'short'}).toUpperCase()}
+tick();setInterval(tick,1000);
+document.getElementById('search').addEventListener('input',e=>{const q=e.target.value.toLowerCase();document.querySelectorAll('.app').forEach(a=>a.style.display=a.dataset.name.includes(q)?'flex':'none')});
+document.querySelectorAll('.ws').forEach(b=>b.onclick=()=>{document.querySelectorAll('.ws').forEach(x=>x.classList.remove('active'));b.classList.add('active')});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){launcher.classList.add('hidden');deck.classList.add('hidden');term.classList.remove('show')}});
+</script>
+</body>
+</html>
