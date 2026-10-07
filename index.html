@@ -132,7 +132,23 @@ document.querySelectorAll('.ws').forEach(b=>b.onclick=()=>{document.querySelecto
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){launcher.classList.add('closed');deck.classList.add('closed');$('context').classList.remove('show')}if(e.key==='Meta'){e.preventDefault();toggleLauncher()}});
 document.addEventListener('contextmenu',e=>{e.preventDefault();let c=$('context');c.style.left=Math.min(e.clientX,innerWidth-200)+'px';c.style.top=Math.min(e.clientY,innerHeight-150)+'px';c.classList.add('show')});
 document.addEventListener('click',e=>{if(!e.target.closest('#context'))$('context').classList.remove('show')});
-document.querySelectorAll('.window').forEach(win=>win.addEventListener('mousedown',()=>focusWin(win)));document.querySelectorAll('.titlebar').forEach(bar=>{let win=bar.parentElement,drag=false,ox=0,oy=0;bar.addEventListener('dblclick',e=>{if(e.target.tagName!=='BUTTON')maxWin(win.id)});bar.addEventListener('mousedown',e=>{if(e.target.tagName==='BUTTON')return;drag=true;ox=e.clientX-win.offsetLeft;oy=e.clientY-win.offsetTop;focusWin(win);document.addEventListener('mousemove',e=>{if(drag){win.style.left=Math.max(0,Math.min(innerWidth-win.offsetWidth,e.clientX-ox))+'px';win.style.top=Math.max(52,Math.min(innerHeight-win.offsetHeight,e.clientY-oy))+'px';win.style.bottom='auto'}});document.addEventListener('mouseup',()=>drag=false)});
+document.querySelectorAll('.window').forEach(win=>win.addEventListener('mousedown',()=>focusWin(win)));
+document.querySelectorAll('.titlebar').forEach(bar=>{
+  const win=bar.parentElement;
+  let drag=false,ox=0,oy=0;
+  bar.addEventListener('dblclick',e=>{if(e.target.tagName!=='BUTTON')maxWin(win.id)});
+  bar.addEventListener('mousedown',e=>{
+    if(e.target.tagName==='BUTTON'||win.classList.contains('maximized'))return;
+    drag=true;ox=e.clientX-win.offsetLeft;oy=e.clientY-win.offsetTop;focusWin(win);
+  });
+  document.addEventListener('mousemove',e=>{
+    if(!drag)return;
+    win.style.left=Math.max(0,Math.min(innerWidth-win.offsetWidth,e.clientX-ox))+'px';
+    win.style.top=Math.max(52,Math.min(innerHeight-win.offsetHeight,e.clientY-oy))+'px';
+    win.style.bottom='auto';
+  });
+  document.addEventListener('mouseup',()=>{drag=false});
+});
 
 function openQuick(id){let w=$(id);w.classList.remove('hidden','minimized');focusWin(w);launcher.classList.add('closed');syncDock()}
 function closeWin(id){$(id).classList.add('hidden');syncDock()}
