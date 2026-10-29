@@ -364,6 +364,19 @@ A branch `dev/experimental` concentra a simplificação do projeto sem modificar
 
 Este documento descreve resultados relatados dos testes anteriores, não uma nova validação executada na VM.
 
+## Histórico de desenvolvimento
+
+### 29/10/2026 — Primeira verificação (America/Sao_Paulo)
+
+Foram identificados **dois commits de documentação** na branch `dev/experimental`, anteriores a esta verificação:
+
+- [`f885aa5`](https://github.com/LucasSudati/LS-OS/commit/f885aa501bd05627f2a10a6e979e7ef57a223750) — reorganizado o registro do terminal Foot e delimitado o escopo da limpeza experimental; Kitty e hyprpaper permanecem documentados como incompatibilidades observadas, sem indicação de remoção de pacotes na VM.
+- [`cef5159`](https://github.com/LucasSudati/LS-OS/commit/cef5159cce83b9302b0527bac076dbda5bda36bf) — mantidos Waybar e Wofi na base documentada, com validação funcional ainda pendente; priorizados testes e estabilização antes de substituir componentes por implementações próprias.
+
+**Arquivos modificados nesses commits:** somente `README.md`. Não foram verificadas alterações de código ou novos testes na VM nesses commits.
+
+**Referência para a próxima comparação (HEAD verificado antes deste registro):** `cef5159cce83b9302b0527bac076dbda5bda36bf`. Esta é a primeira verificação deste histórico; não existe um registro anterior de comparação automática nesta seção.
+
 ## Filosofia do repositório
 
 Este README funciona como documentação técnica viva do LS-OS.
