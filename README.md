@@ -22,7 +22,6 @@ O LS-OS está atualmente na fase de construção e estabilização do ambiente g
 | Thunar | ✅ Instalado |
 | Mako | ✅ Instalado |
 | Foot | ✅ Terminal padrão e estável na VM |
-| Kitty | ⚠️ Incompatível com a VM atual; não utilizado |
 | Clipboard Windows ↔ Wayland | ⚠️ Em diagnóstico |
 | Wallpaper LS-OS | ✅ Aplicado com AWWW |
 | Identidade visual LS-OS | 🚧 Em implementação |
@@ -239,7 +238,7 @@ exec start-hyprland
 
 A solução definitiva ainda não foi escolhida.
 
-## Terminal: Kitty substituído pelo Foot
+## Terminal funcional: Foot
 
 O crash do Kitty foi isolado e deixou de ser um bloqueio para o desenvolvimento.
 
@@ -259,7 +258,7 @@ local terminal = "foot"
 
 Após reiniciar o Hyprland, os atalhos passaram a abrir o Foot sem provocar crash. O Foot é, portanto, o terminal padrão atual do LS-OS na VM de desenvolvimento.
 
-O Kitty permanece apenas como registro do problema encontrado e não é utilizado no fluxo normal.
+O Kitty não faz parte do conjunto recomendado de aplicativos. O histórico de sua falha fica documentado aqui apenas para evitar reintroduzir a incompatibilidade.
 
 ## Wallpaper e AWWW
 
@@ -351,6 +350,18 @@ Quando o desktop estiver estável, serão estudados:
 - imagem/ISO;
 - processo de atualização;
 - distribuição do LS-OS.
+
+## Escopo da limpeza experimental
+
+A branch `dev/experimental` concentra a simplificação do projeto sem modificar a `main`.
+
+- **Manter como base documentada:** Arch Linux, boot/TTY, Hyprland, Foot, Thunar e wallpaper via AWWW, conforme os testes registrados anteriormente.
+- **Não usar como padrão:** Kitty e hyprpaper, que apresentaram falhas no VirtualBox; preservar apenas o registro técnico dos problemas.
+- **Ainda não validar como funcionais:** clipboard bidirecional Windows/Wayland, personalização definitiva do desktop e recursos ainda em desenvolvimento.
+- **Próxima verificação necessária:** conferir os arquivos de configuração e scripts efetivamente versionados antes de apagar código. Pacotes instalados dentro da VM não são removidos por alterações no GitHub.
+- **Interface web:** qualquer terminal simulado no `index.html` deve ser tratado separadamente do terminal Foot real do Linux; a documentação do ambiente Linux não comprova seu funcionamento.
+
+Este documento descreve resultados relatados dos testes anteriores, não uma nova validação executada na VM.
 
 ## Filosofia do repositório
 
