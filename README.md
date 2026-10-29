@@ -355,9 +355,10 @@ Quando o desktop estiver estável, serão estudados:
 
 A branch `dev/experimental` concentra a simplificação do projeto sem modificar a `main`.
 
-- **Manter como base documentada:** Arch Linux, boot/TTY, Hyprland, Foot, Thunar e wallpaper via AWWW, conforme os testes registrados anteriormente.
+- **Manter como base documentada:** Arch Linux, boot/TTY, Hyprland, Foot, Thunar, wallpaper via AWWW, Waybar e Wofi, conforme os testes registrados anteriormente. Waybar e Wofi estão instalados, mas suas funções ainda precisam ser verificadas na VM.
 - **Não usar como padrão:** Kitty e hyprpaper, que apresentaram falhas no VirtualBox; preservar apenas o registro técnico dos problemas.
 - **Ainda não validar como funcionais:** clipboard bidirecional Windows/Wayland, personalização definitiva do desktop e recursos ainda em desenvolvimento.
+- **Ordem aprovada:** primeiro estabilizar e testar os componentes existentes, mantendo Waybar e Wofi por enquanto; só depois reconstruir barra, launcher e demais componentes próprios, um por vez.
 - **Próxima verificação necessária:** conferir os arquivos de configuração e scripts efetivamente versionados antes de apagar código. Pacotes instalados dentro da VM não são removidos por alterações no GitHub.
 - **Interface web:** qualquer terminal simulado no `index.html` deve ser tratado separadamente do terminal Foot real do Linux; a documentação do ambiente Linux não comprova seu funcionamento.
 
